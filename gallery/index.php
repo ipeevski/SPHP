@@ -22,15 +22,17 @@ if (!$_SESSION['style'])
 if (!$_SESSION['menu'])
   $_SESSION['menu'] = 'list';
 
-if (empty($_SESSION['images']) || $_GET['reload'])
+if (empty($_SESSION['images']) || isset($_GET['reload']))
 {
 session_destroy();
 session_start();
 ini_set(max_execution_time, 10000000);
    preload();
 }
-$page = $_GET['page'];
-$page = $page?$page:0;
+if (isset($_GET['page']))
+	$page = $_GET['page'];
+else
+	$page = 0;
 if (!empty($_REQUEST['gallery']))
   $_SESSION['gallery'] = $_REQUEST['gallery'];
 if (!empty($_SESSION['gallery']))
@@ -38,11 +40,13 @@ if (!empty($_SESSION['gallery']))
 
 $images = & $_SESSION['images'][$dir];
 $imgdir =  $dir . '/';
-if ($_REQUEST['image'])
+if (isset($_REQUEST['image']))
 {
 	$image = $_REQUEST['image'];
 	$page = floor(($image-1) / $pagesize);
 }
+else
+	$image = '';
 
 $start = $page*$pagesize;
 ?>

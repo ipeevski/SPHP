@@ -52,6 +52,7 @@ function preload()
   {
     $_SESSION['images'][$dir] = array();
     $_SESSION['movies'][$dir] = array();
+    $_SESSION['info'][$dir]['title'] = $dir;
 
     $size = 0;
     $count = 0;
@@ -174,7 +175,7 @@ function display_menu_galleries()
 function display_conf($name, $options)
 {
 $temp = $_SESSION[$name]?$_SESSION[$name]:'';
-$temp = $_POST[$name]?$_POST[$name]:$temp;
+$temp = isset($_POST[$name])?$_POST[$name]:$temp;
 $_SESSION[$name] = $temp;
 
 echo '<select name="'.$name.'" onChange="this.form.submit();">';
