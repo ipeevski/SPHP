@@ -20,8 +20,8 @@ if (empty($_SESSION['images']) || isset($_GET['reload']))
   ini_set('max_execution_time', 10000000);
   preload();
 }
-
-session_start();
+else
+  session_start();
 // Setting defaults;
 if (!$_SESSION['view'])
   $_SESSION['view'] = 't';
