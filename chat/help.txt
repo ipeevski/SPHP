@@ -1,0 +1,5 @@
+<br>
+Available commands: <br>
+/help - returns this list<br>
+/me - express emotion<br>
+/seen $nick - checks when the $nick was last seen in the room<br>
