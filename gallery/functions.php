@@ -48,6 +48,7 @@ function preload()
   global $dir, $prefix, $files;
   
   $xml_data = '';
+  $xml_files = '';
   if ($dh = opendir($dir))
   {
     $_SESSION['images'][$dir] = array();
@@ -84,7 +85,7 @@ function preload()
         // skip thumbnails, they are not to be browsed.
       if (!stristr(substr($file, 0, strlen($prefix)), $prefix))
       {
-        $xml_data .= '<file name="'.$file.'" size="';
+        $xml_files .= '<file name="'.$file.'" size="';
         if (stristr(substr($file, -3), 'jpg'))
         {
             if (!file_exists($dir.'/'.$prefix.$file))

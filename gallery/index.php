@@ -9,10 +9,18 @@ cyberhorse at gmail
 */
 
 include('config.php');
+include('functions.php');
 //$dir = '/home/user/public_html'; // home directory where images are.
 $dir = '.';
 
-include('functions.php');
+if (empty($_SESSION['images']) || isset($_GET['reload']))
+{
+  session_destroy();
+  session_start();
+  ini_set('max_execution_time', 10000000);
+  preload();
+}
+
 session_start();
 // Setting defaults;
 if (!$_SESSION['view'])
@@ -22,17 +30,7 @@ if (!$_SESSION['style'])
 if (!$_SESSION['menu'])
   $_SESSION['menu'] = 'list';
 
-if (empty($_SESSION['images']) || isset($_GET['reload']))
-{
-session_destroy();
-session_start();
-ini_set('max_execution_time', 10000000);
-   preload();
-}
-if (isset($_GET['page']))
-	$page = $_GET['page'];
-else
-	$page = 0;
+$page = isset($_GET['page'])?$_GET['page']:0;
 if (!empty($_REQUEST['gallery']))
   $_SESSION['gallery'] = $_REQUEST['gallery'];
 if (!empty($_SESSION['gallery']))
