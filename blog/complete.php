@@ -54,7 +54,7 @@ else
   while($row = mysql_fetch_array($q))
     echo show_row($row, "long");
     $q1 = my_mysql_query("select * from replies where user='$_GET[user]' order by timestamp asc");
-    echo "<h1 style=\"margin-left: 440px\">Replies</h1>";
+    echo "<h1>Replies</h1>";
     while($row1 = mysql_fetch_array($q1))
       echo show_row($row1, "long");
 } 
