@@ -155,7 +155,7 @@ function extractEXIFData($data, $length)
 // takes a tag id along with the format, data and length of the data and deals with it appropriatly
 function dealwithtag($tag, $format, $data, $length, $align) 
 {
-	global $exif_data, $tags;
+	global $exif_data, $exif_tags;
 
 	$format_type = array("", "BYTE", "STRING", "USHORT", "ULONG", "URATIONAL", "SBYTE", "UNDEFINED", "SSHORT", "SLONG", "SRATIONAL", "SINGLE", "DOUBLE");
 	$w = false;
@@ -191,14 +191,14 @@ function dealwithtag($tag, $format, $data, $length, $align)
 			break;
 	}
 	
-	if ($tags[$tag]['Type'] == 'Lookup')
-		$val = $tags[$tag][$val];
-	else if ($tags[$tag]['Type'] == 'Numeric' && isset($tags[$tag]['Units']))
-		$val .= ' '.$tags[$tag]['Units'];
+	if ($exif_tags[$tag]['Type'] == 'Lookup' && isset($exif_tags[$tag][$val]))
+		$val = $exif_tags[$tag][$val];
+	else if ($exif_tags[$tag]['Type'] == 'Numeric' && isset($exif_tags[$tag]['Units']))
+		$val .= ' '.$exif_tags[$tag]['Units'];
 
 	if ($w)
-		if ($tags[$tag]['Name'])
-			$exif_data[$tags[$tag]['Name']] = $val;
+		if ($exif_tags[$tag]['Name'])
+			$exif_data[$exif_tags[$tag]['Name']] = $val;
 		else 
 			$exif_data[$tag.'_unknown']=$val;
 }

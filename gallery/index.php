@@ -19,7 +19,9 @@ if (empty($_SESSION['images']) || isset($_GET['reload']))
   session_destroy();
   session_start();
   ini_set('max_execution_time', 10000000);
+	echo 'Loading images now (can take a while): ';
   preload();
+	echo '<br />';
 }
 // Setting defaults;
 if (!isset($_SESSION['view']))
@@ -75,9 +77,14 @@ else
 {
 $view = $_SESSION['view'];
 echo '<table align="center" cellpadding="10">';
-for ($i = $start; $i < $pagesize+$start && $i < count($images); $i++)
+$i = -1;
+foreach ($images as $iname=>$info)// = $start; $i < $pagesize+$start && $i < count($images); $i++)
 {
- 	exif_tab($i);
+	$i++;
+	if ($i < $start || $i >= $pagesize + $start)
+		continue;
+	if ($do_exif)
+	 	exif_tab($iname);
   if ($view == 't')
   {
     if (($i-$start)%4 == 0)
@@ -88,13 +95,15 @@ for ($i = $start; $i < $pagesize+$start && $i < count($images); $i++)
   	if ($i + 1 == $image)
   		echo ' style="border: 3px solid; border-color: blue"';
   	echo '>
-      <a id="'.$i.'" href="'.$imgdir.$images[$i]['name'].'"><img src="'.$imgdir.$prefix.$images[$i]['name'].'" border="0" alt="picture" /></a><br />
+      <a id="'.$i.'" href="'.$imgdir.$iname.'"><img src="'.$imgdir.$prefix.$iname.'" border="0" alt="picture" /></a><br />
   		<hr />
-      <span class="highlight">Name:</span> '.$images[$i]['name'].'<br />
-      <span class="highlight">Date:</span> '.$images[$i]['date'].'<br />
-      <span class="highlight">Resolution:</span> '.$images[$i]['w'].'x'.$images[$i]['h'].'<br />
-      <span class="highlight">Size:</span> '.$images[$i]['size'].'<br />
-  		<a href="javascript:void(0);" onClick="hide('.$i.')">EXIF info</a>
+      <span class="highlight">Name:</span> '.$info['name'].'<br />
+      <span class="highlight">Date:</span> '.$info['date'].'<br />
+      <span class="highlight">Resolution:</span> '.$info['w'].'x'.$info['h'].'<br />
+      <span class="highlight">Size:</span> '.$info['size'].'<br />';
+		if ($do_exif)
+  		echo '<a href="javascript:void(0);" onClick="hide(\''.$iname.'\')">EXIF info</a>';
+		echo '
     </td>';
     if (($i-$start)%4 == 3)
       echo '</tr>';
@@ -107,14 +116,16 @@ for ($i = $start; $i < $pagesize+$start && $i < count($images); $i++)
 		if ($i + 1 == $image)
                   echo ' style="border: 3px solid; border-color: blue"';
 		echo '>
-			<a id="'.$i.'" href="'.$imgdir.$images[$i]['name'].'">
-			<img src="'.$imgdir.$prefix.$images[$i]['name'].'" alt="picture" width="100" /></a>
+			<a id="'.$i.'" href="'.$imgdir.$iname.'">
+			<img src="'.$imgdir.$prefix.$iname.'" alt="picture" width="100" /></a>
 		</td>
-		<td>'.$images[$i]['name'].'<br />
-		'.$images[$i]['date'].'<br />
-		'.$images[$i]['w'].'x'.$images[$i]['h'].'<br />
-		'.$images[$i]['size'].'</td>
-		<td><a href="javascript:void(0);" onClick="hide('.$i.')">EXIF info</a></td>
+		<td>'.$iname.'<br />
+		'.$info['date'].'<br />
+		'.$info['w'].'x'.$info['h'].'<br />
+		'.$info['size'].'</td>';
+		if ($do_exif)
+			echo '<td><a href="javascript:void(0);" onClick="hide(\''.$iname.'\')">EXIF info</a></td>';
+		echo '
 	</tr>';
 	}
 	else if ($view == 'd')
@@ -123,12 +134,14 @@ for ($i = $start; $i < $pagesize+$start && $i < count($images); $i++)
 	<tr>
 		<td';
 		if ($i + 1 == $image)
-                  echo ' style="border: 3px solid; border-color: blue"';
-		echo '><a id="'.$i.'" href="'.$imgdir.$images[$i]['name'].'">'.$imgdir.$images[$i]['name'].'</a></td>
-		<td>'.$images[$i]['date'].'</td>
-		<td>'.$images[$i]['w'].'x'.$images[$i]['h'].'</td>
-		<td>'.$images[$i]['size'].'</td>
-		<td><a href="javascript:void(0);" onClick="hide('.$i.')">EXIF info</a></td>
+			echo ' style="border: 3px solid; border-color: blue"';
+		echo '><a id="'.$i.'" href="'.$imgdir.$iname.'">'.$imgdir.$iname.'</a></td>
+		<td>'.$info['date'].'</td>
+		<td>'.$info['w'].'x'.$info['h'].'</td>
+		<td>'.$info['size'].'</td>';
+		if ($do_exif)
+			echo '<td><a href="javascript:void(0);" onClick="hide(\''.$iname.'\')">EXIF info</a></td>';
+		echo '
 	</tr>';
 	}
 }

@@ -1,6 +1,6 @@
 <?php
-global $tags;
-$tags = array (
+global $exif_tags;
+$exif_tags = array (
 
 // Exif IFD
 

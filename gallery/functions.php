@@ -11,6 +11,17 @@ function formatsize($size)
         return $size . ' B';
 }
 
+function file_type($filename)
+{
+	global $types;
+	$ext = substr($filename, strpos($filename, '.') + 1);
+	foreach($types as $type=>$extensions)
+	if (in_array(strtolower($ext), $extensions))
+		return $type;
+
+	return 'other';
+}
+
 function resize($file)
 {
   global $dir, $prefix, $conf_thumbs;
@@ -38,14 +49,19 @@ function resize($file)
   imageCopyResampled ( $img, $src, 0, 0, 0, 0,
                   $rw, $rh, $sw, $sh);
   if (substr($file, 0, 4) != $prefix)
-    imagejpeg ( $img, $dir.'/'.$prefix.$file, $quality );
+		if (strtolower(substr($file, -3)) == 'jpg')
+	    imagejpeg ( $img, $dir.'/'.$prefix.$file, $quality );
+		else
+			imagegif( $img, $dir.'/'.$prefix.$file, $quality );
 
 //  return $img;
 }
 
 function preload()
 {
-  global $dir, $prefix, $files;
+  global $dir, $prefix, $files, $types, 
+	$do_exif, $do_xml;
+	global $totalcount;
   
   $xml_data = '';
   if ($dh = opendir($dir))
@@ -53,20 +69,45 @@ function preload()
     $_SESSION['images'][$dir] = array();
     $_SESSION['movies'][$dir] = array();
     $_SESSION['info'][$dir]['title'] = $dir;
+		$new_files = true;
+
+		if ($do_xml)
+		{
+			include_once('xml.php');
+			$xml_info = xml_parser($dir . '/' . $files['xml']);
+			$xml_info = $xml_info[0];
+
+			if (!empty($xml_info))
+			{
+				if (isset($xml_info['attrs']))
+  				$_SESSION['info'][$dir]['title'] = $xml_info['attrs']['NAME'];
+  
+				if (isset($xml_info['children']))
+  			foreach($xml_info['children'] as $xmlfile)
+  				$_SESSION[file_type($xmlfile['attrs']['NAME'])][$dir][$xmlfile['attrs']['NAME']] = xml_fileinfo($xmlfile);
+
+				$new_files = false;
+			}
+		}
+		
+		if (file_exists($dir . '/gallery.inc.php'))
+		{
+			$inc = file($dir . '/gallery.inc.php');
+			$_SESSION['info'][$dir]['title'] = stripslashes(substr($inc[1], strpos($inc[1], '<h1>')+4, strpos($inc[1], '</h1>') - strpos($inc[1], '<h1>')));
+		}
 
     $size = 0;
     $count = 0;
     while (($file = readdir($dh)) !== false)
     {
-//echo '.';
-      if (substr($file,0,1) == '.')
+echo '.';
+if (++$totalcount % 100 == 1)
+	echo '<br />';
+//echo $_SESSION['images'][$dir][$file];
+flush();
+      // skip program files and thumbnails, they are not to be browsed.
+      if (in_array($file,$types['ignore']) || (stristr(substr($file, 0, strlen($prefix)), $prefix)))
         ;
-      else if ($file == 'gallery.inc.php')
-      {
-        $inc = file($dir . '/' . $file);
-        $title = stripslashes(substr($inc[1], strpos($inc[1], '<h1>')+4, strpos($inc[1], '</h1>') - strpos($inc[1], '<h1>')));
-     	  $_SESSION['info'][$dir]['title'] = $title;
-      }
       else if (is_dir($dir.'/'.$file))
       {
         $olddir = $dir;
@@ -74,77 +115,138 @@ function preload()
         preload();
         $dir = $olddir;
       }
+			else if (isset($_SESSION['images'][$dir][$file]) || !empty($_SESSION['movies'][$dir][$file]))
+				; // file found in xml
       else
       {
         $fileinfo = array('name'=>$file,
                           'size'=>formatsize(filesize($dir.'/'.$file)),
-                          'date'=>date("d/m/Y H:i", filemtime($dir.'/'.$file)));
-        if (stristr(substr($file, -3), 'mpg'))
-        {
-          $_SESSION['movies'][$dir][] = $fileinfo;
-        }
-        // skip thumbnails, they are not to be browsed.
-      if (!stristr(substr($file, 0, strlen($prefix)), $prefix))
-      {
-        $xml_data .= '<file name="'.$file.'" size="'.filesize($dir.'/'.$file)."\">\n";
-        if (stristr(substr($file, -3), 'jpg'))
-        {
-            if (!file_exists($dir.'/'.$prefix.$file))
-              resize($file);
-            $info = getimagesize($dir.'/'.$file);
-include_once('exif.php');
-global $exif_data, $tags;
-exif($file);
+                          'date'=>date("d/m/Y H:i", filemtime($dir.'/'.$file)),
+													'type'=>file_type($file)); 
 
-            $_SESSION['images'][$dir][] = array_merge($fileinfo, array(
+				if ($do_xml)
+	        $xml_data .= '<file 
+	name="'.$file.'" 
+	size="'.filesize($dir.'/'.$file).'"
+  date="'.filemtime($dir.'/'.$file).'"
+	type="'.file_type($file)."\">\n";
+
+        if (file_type($file) == 'movies')
+        {
+					if (!isset($_SESSION['movies'][$dir][$file]))
+					{
+						$new_files = true;
+	          $_SESSION['movies'][$dir][$file] = $fileinfo;
+					}
+        }
+        if (file_type($file) == 'images')
+        {
+					if (isset($_SESSION['images'][$dir][$file]))
+						continue;
+					else
+						$new_files = true;
+  
+          if (!file_exists($dir.'/'.$prefix.$file))
+            resize($file);
+          $info = getimagesize($dir.'/'.$file);
+
+          $fileinfo = array_merge($fileinfo, array(
                                           'w'=>$info[0],
                                           'h'=>$info[1],
-                                          'bits'=>$info['bits'],
-                                          'exif'=>$exif_data));
-            $xml_data .= '<exif';
-            foreach($exif_data as $tagname => $tag)
-              $xml_data .= ' '.str_replace(' ', '_', $tagname) . '="'.$tag.'"'."\n";
-            $xml_data .= " />\n";
-          }
-          $xml_data .= "</file>\n";
+                                          'bits'=>$info['bits']));
+
+					if ($do_xml)
+						$xml_data .= '<dimenstions 
+	w="'.$info[0].'"
+	h="'.$info[1].'"
+	bits="'.$info['bits'].'" />
+';
+  
+  				if ($do_exif)
+  				{
+            include_once('exif.php');
+            global $exif_data, $exif_tags;
+            exif($file);
+  
+  					$fileinfo = array_merge($fileinfo, array('exif'=>$exif_data));
+  				
+  					if ($do_xml)
+  					{
+                $xml_data .= '<exif';
+                foreach($exif_data as $tagname => $tag)
+                  $xml_data .= ' '.str_replace(' ', '_', $tagname) . '="'.$tag.'"'."\n";
+                $xml_data .= " />\n";
+  					}
+  				}
+  
+  				$_SESSION['images'][$dir][$file] = $fileinfo;
         }
+				if ($do_xml)
+		      $xml_data .= "</file>\n";
       }
     }
     closedir($dh);
 
-    $xml_data = '<gallery dir="'.$dir.'" size="'.$size.'" count="'.$count.'">'."\n" . $xml_data . '</gallery>'; 
+		foreach($types as $type=>$content)
+		{
+			if ($type != 'ignore' && isset($_SESSION[$type]))
+			{
+				$count += count($_SESSION[$type]);
+				foreach($_SESSION[$type][$dir] as $tfile)
+					$size += $tfile['size'];
+			}
+		}
 
-    $xml_path = $dir . '/' . $files['xml'];
-    if (is_writable($xml_path)) 
-    {
-      $xml_file = fopen($xml_path, 'w+');
-      if (!$xml_file)
-        echo 'cant open the file';
-      if (fwrite($xml_file, $xml_data) === FALSE)
-        echo 'error';
-      fclose($xml_file);
-    }
-    else
-      echo 'xml file not writable: ' . $xml_path . '<br />';
-    if (is_writable($dir.'/'.$files['index']))
-    {
-      $index_file = fopen($dir.'/'.$files['index'], 'w+');
-      $levels = strlen($dir) - strlen(str_replace('/', '', $dir));
-      $backdir = '';
-      while ($levels-- > 0)
-        $backdir .= '../';
-      fwrite($index_file, '<?php header(\'Location: '.$backdir.'index.php?gallery=' . $dir . '\'); ?>');
-      fclose($index_file);
-    }
+		if ($do_xml && $new_files)
+		{
+       $xml_data = '<gallery 
+	dir="'.$dir.'"
+	name="'.htmlentities(strip_tags($_SESSION['info'][$dir]['title'])).'" 
+	size="'.$size.'" 
+	count="'.$count.'">
+' . $xml_data . '</gallery>'; 
+  
+      $xml_path = $dir . '/' . $files['xml'];
+      if (is_writable($xml_path)) 
+      {
+        $xml_file = fopen($xml_path, 'w+');
+        if (!$xml_file)
+          echo 'cant open the file';
+        if (fwrite($xml_file, $xml_data) === FALSE)
+          echo 'error';
+        fclose($xml_file);
+      }
+      else
+        echo 'xml file not writable: ' . $xml_path . '<br />';
+		}
+
+    if ($dir != '.')
+		{
+			if (is_writable($dir.'/'.$files['index']))
+	    {
+  	    $index_file = fopen($dir.'/'.$files['index'], 'w+');
+    	  $levels = strlen($dir) - strlen(str_replace('/', '', $dir));
+      	$backdir = '';
+	      while ($levels-- > 0)
+  	      $backdir .= '../';
+	      fwrite($index_file, '<?php header(\'Location: '.$backdir.'index.php?gallery=' . $dir . '\'); ?>');
+  	    fclose($index_file);
+    	}
+			else
+				echo 'protective index file not writable: ' . $dir . '/' . $files['index'] . '<br />';
+		}
   }
 }
 
 function exif_tab($i)
 {
-        global $images;
+		global $images;
 
-    echo '<div id="pic'.$i.'" style="max-width: 200px;background-color: lightblue; border: 1px solid; padding: 20px;position: absolute; top: 20px; left: 0px; display:none; text-align: left"><br />';
-        echo '<h2>EXIF info</h2>';
+	  echo '
+<div id="pic_'.$i.'" style="max-width: 200px;background-color: lightblue; border: 1px solid; padding: 20px;position: absolute; top: 20px; left: 0px; display:none; text-align: left"><br />
+';
+        echo '<h2>EXIF info</h2>
+';
         echo '<a style="color: black; background-color: lightblue; border: 1px solid black; position: absolute; top: -15px; left: 220px" href="javascript:void();" onClick="hide('.$i.')">x</a>';
     echo '<span class="highlight">Bits:</span> '.$images[$i]['bits'] . '<br />';
         foreach($images[$i]['exif'] as $key=>$value)
@@ -160,7 +262,8 @@ function display_menu_galleries()
   foreach ($_SESSION['images'] as $key=>$val)
     {
 //    if (count($val) > 0)
-      $title = $_SESSION['info'][$key]['title'];
+			if (!empty($_SESSION['info'][$key]))
+	      $title = $_SESSION['info'][$key]['title'];
       if (empty($title))
         $title = substr($key, strrpos($key, '/')+1);
       if ($key == '.')
