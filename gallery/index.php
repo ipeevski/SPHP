@@ -13,6 +13,7 @@ include('functions.php');
 //$dir = '/home/user/public_html'; // home directory where images are.
 $dir = '.';
 
+session_start();
 if (empty($_SESSION['images']) || isset($_GET['reload']))
 {
   session_destroy();
@@ -20,14 +21,12 @@ if (empty($_SESSION['images']) || isset($_GET['reload']))
   ini_set('max_execution_time', 10000000);
   preload();
 }
-else
-  session_start();
 // Setting defaults;
-if (!$_SESSION['view'])
+if (!isset($_SESSION['view']))
   $_SESSION['view'] = 't';
-if (!$_SESSION['style'])
+if (!isset($_SESSION['style']))
   $_SESSION['style'] = 'main.css';
-if (!$_SESSION['menu'])
+if (!isset($_SESSION['menu']))
   $_SESSION['menu'] = 'list';
 
 $page = isset($_GET['page'])?$_GET['page']:0;

@@ -48,7 +48,6 @@ function preload()
   global $dir, $prefix, $files;
   
   $xml_data = '';
-  $xml_files = '';
   if ($dh = opendir($dir))
   {
     $_SESSION['images'][$dir] = array();
@@ -77,7 +76,9 @@ function preload()
       }
       else
       {
-        $fileinfo = array('name'=>$file,                                                                  'size'=>formatsize(filesize($dir.'/'.$file)),                                   'date'=>date("d/m/Y H:i", filemtime($dir.'/'.$file)));
+        $fileinfo = array('name'=>$file,
+                          'size'=>formatsize(filesize($dir.'/'.$file)),
+                          'date'=>date("d/m/Y H:i", filemtime($dir.'/'.$file)));
         if (stristr(substr($file, -3), 'mpg'))
         {
           $_SESSION['movies'][$dir][] = $fileinfo;
@@ -85,7 +86,7 @@ function preload()
         // skip thumbnails, they are not to be browsed.
       if (!stristr(substr($file, 0, strlen($prefix)), $prefix))
       {
-        $xml_files .= '<file name="'.$file.'" size="';
+        $xml_data .= '<file name="'.$file.'" size="'.filesize($dir.'/'.$file)."\">\n";
         if (stristr(substr($file, -3), 'jpg'))
         {
             if (!file_exists($dir.'/'.$prefix.$file))
@@ -99,20 +100,21 @@ exif($file);
                                           'w'=>$info[0],
                                           'h'=>$info[1],
                                           'bits'=>$info['bits'],
-                                                'exif'=>$exif_data));
+                                          'exif'=>$exif_data));
+            $xml_data .= '<exif';
+            foreach($exif_data as $tagname => $tag)
+              $xml_data .= ' '.str_replace(' ', '_', $tagname) . '="'.$tag.'"'."\n";
+            $xml_data .= " />\n";
           }
+          $xml_data .= "</file>\n";
         }
       }
     }
     closedir($dh);
 
-    $xml_data = '<filelist dir="'.$dir.'" size="'.$size.'" count="'.$count.'">';
-    $xml_data .= $xml_files;
-    $xml_data .= '</filelist>';
-    
+    $xml_data = '<gallery dir="'.$dir.'" size="'.$size.'" count="'.$count.'">'."\n" . $xml_data . '</gallery>'; 
 
     $xml_path = $dir . '/' . $files['xml'];
-//echo $xml_path;
     if (is_writable($xml_path)) 
     {
       $xml_file = fopen($xml_path, 'w+');
@@ -123,11 +125,12 @@ exif($file);
       fclose($xml_file);
     }
     else
-      echo 'xml file not writable';
+      echo 'xml file not writable: ' . $xml_path . '<br />';
     if (is_writable($dir.'/'.$files['index']))
     {
       $index_file = fopen($dir.'/'.$files['index'], 'w+');
       $levels = strlen($dir) - strlen(str_replace('/', '', $dir));
+      $backdir = '';
       while ($levels-- > 0)
         $backdir .= '../';
       fwrite($index_file, '<?php header(\'Location: '.$backdir.'index.php?gallery=' . $dir . '\'); ?>');
