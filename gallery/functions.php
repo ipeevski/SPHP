@@ -84,7 +84,7 @@ function preload()
         // skip thumbnails, they are not to be browsed.
       if (!stristr(substr($file, 0, strlen($prefix)), $prefix))
       {
-        $xml_files .= '<file name="'.$file.'" size="';
+        $xml_data .= '<file name="'.$file.'" size="';
         if (stristr(substr($file, -3), 'jpg'))
         {
             if (!file_exists($dir.'/'.$prefix.$file))
@@ -123,12 +123,15 @@ exif($file);
     }
     else
       echo 'xml file not writable';
-    $index_file = fopen($dir.'/'.$files['index'], 'w+');
-    $levels = strlen($dir) - strlen(str_replace('/', '', $dir));
-    while ($levels-- > 0)
-      $backdir .= '../';
-    fwrite($index_file, '<?php header(\'Location: '.$backdir.'index.php?gallery=' . $dir . '\'); ?>');
-    fclose($index_file);
+    if (is_writable($dir.'/'.$files['index']))
+    {
+      $index_file = fopen($dir.'/'.$files['index'], 'w+');
+      $levels = strlen($dir) - strlen(str_replace('/', '', $dir));
+      while ($levels-- > 0)
+        $backdir .= '../';
+      fwrite($index_file, '<?php header(\'Location: '.$backdir.'index.php?gallery=' . $dir . '\'); ?>');
+      fclose($index_file);
+    }
   }
 }
 
@@ -174,7 +177,7 @@ function display_menu_galleries()
 
 function display_conf($name, $options)
 {
-$temp = $_SESSION[$name]?$_SESSION[$name]:'';
+$temp = isset($_SESSION[$name])?$_SESSION[$name]:'';
 $temp = isset($_POST[$name])?$_POST[$name]:$temp;
 $_SESSION[$name] = $temp;
 

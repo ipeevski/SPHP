@@ -193,7 +193,7 @@ function dealwithtag($tag, $format, $data, $length, $align)
 	
 	if ($tags[$tag]['Type'] == 'Lookup')
 		$val = $tags[$tag][$val];
-	else if ($tags[$tag]['Type'] == 'Numeric')
+	else if ($tags[$tag]['Type'] == 'Numeric' && isset($tags[$tag]['Units']))
 		$val .= ' '.$tags[$tag]['Units'];
 
 	if ($w)

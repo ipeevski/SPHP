@@ -26,7 +26,7 @@ if (empty($_SESSION['images']) || isset($_GET['reload']))
 {
 session_destroy();
 session_start();
-ini_set(max_execution_time, 10000000);
+ini_set('max_execution_time', 10000000);
    preload();
 }
 if (isset($_GET['page']))
