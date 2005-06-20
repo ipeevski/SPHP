@@ -1,0 +1,32 @@
+body
+{
+	font-family: Verdana, sans-serif;
+	margin: 20px;
+	border: 1px solid black;
+}
+
+td
+{
+	font-size: 12px;
+}
+
+.negative
+{
+	color: red;
+	font-weight: bold;
+}
+
+.odd
+{
+	background: lightgreen;
+}
+
+.even
+{
+	background: white;
+}
+
+.incomplete
+{
+	background: darkgray;
+}
