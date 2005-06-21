@@ -24,4 +24,4 @@
 # For example:
 money (echo ""; id; echo "%{sv}"; date; cat) >> $CVSROOT/ChangeLog
 # or
-DEFAULT (echo ""; id; echo %{s}{V}{v}; date; cat) >> $CVSROOT/CVSROOT/commitlog
+#DEFAULT (echo ""; id; echo %{s}{V}{v}; date; cat) >> $CVSROOT/CVSROOT/commitlog
