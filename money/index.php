@@ -20,7 +20,7 @@ if (!isset($_SESSION['user']))
 	{
 		$sql = "
 SELECT id
-FROM bb.users
+FROM {$cfg['userdb']}.users
 WHERE user = '{$_POST['username']}'
 AND pass = '" . md5($_POST['password']) ."'"; 
 		$_SESSION['user'] = db_loadResult($sql);
