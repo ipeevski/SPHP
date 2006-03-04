@@ -1,10 +1,14 @@
 <?php
+$text_fields = $cfg['text_fields']; 
 if ($_POST['enter'])
 {
 	$_SESSION['acc'] = $_POST['account'];
 	
-	if (empty($_POST['edit']))
-		$sql = "INSERT INTO records VALUES(NULL, {$_SESSION['acc']}, '{$_POST['person']}', {$_POST['value']}, '{$_POST['date']}', '{$_POST['completed']}', '{$_POST['category']}', '{$_POST['title']}', '{$_POST['notes']}')";
+	foreach($text_fields as $sql_field)
+		$_POST[$sql_field] = addslashes($_POST[$sql_field]);
+		
+	if (empty($_POST['id']))
+		$sql = "INSERT INTO records VALUES(NULL, {$_SESSION['acc']}, '{$_POST['person']}', {$_POST['value']}, '{$_POST['date']}', '{$_POST['state']}', '{$_POST['category']}', '{$_POST['title']}', '{$_POST['notes']}')";
 	else
 		$sql = "
 UPDATE records 
@@ -15,15 +19,15 @@ person='{$_POST['person']}',
 `date`='{$_POST['date']}', 
 category='{$_POST['category']}', 
 notes='{$_POST['notes']}',
-completed='{$_POST['completed']}'
-WHERE id={$_POST['edit']}";
+state='{$_POST['state']}'
+WHERE id={$_POST['id']}";
 
 	db_exec($sql);
-echo db_error();
+
 	if (!empty($_POST['oldvalue']))
 		$_POST['value'] -= $_POST['oldvalue'];
 
-	db_exec('UPDATE chests SET balance=balance+' . $_POST['value'] . ' WHERE id=' . $_POST['account']);
+	//db_exec('UPDATE chests SET balance=balance+' . $_POST['value'] . ' WHERE id=' . $_POST['account']);
 }
 if ($_REQUEST['id'])
 {
@@ -32,25 +36,43 @@ SELECT *
 FROM records
 WHERE id=' . $_REQUEST['id']);
 	$rec = $rec[0];
+
+	foreach($text_fields as $sql_field)
+		$rec[$sql_field] = stripslashes($rec[$sql_field]);
 }
 if ($_REQUEST['del_id'])
 	db_exec('DELETE FROM records WHERE id = ' . $_REQUEST['del_id']);
-	
 ?>
 <form action="?p=enter" method="post">
-<input type="hidden" name="edit" value="<?php echo $rec['id']; ?>" />
+<input type="hidden" name="id" value="<?php echo $rec['id']; ?>" />
 <input type="hidden" name="oldvalue" value="<?php echo $rec['money']; ?>" />
 <table align="center">
+<?php
+if (isset($rec['acc']))
+	echo '<input type="hidden" name="account" value="' . $rec['acc'] . '" />';
+else
+{
+?>
 <tr>
 	<td colspan="4">
 		<select name="account">
 <?php
-	$accs = db_loadList('select * from chests');
+	$sql = '
+select chests.*, sum(money) as balance 
+from chests, records 
+where records.acc = chests.id 
+AND user = ' . $_SESSION['user'] . '
+GROUP BY chests.id';
+	$accs = db_loadList($sql);
 	foreach($accs as $acc)
-		echo '<option value="' . $acc['id'].'">'.$acc['name'] . '('.$acc['balance'].')</option>';
+		echo '<option value="' . $acc['id'].'">'.$acc['name'] . ' ('.$acc['balance'].')</option>';
 ?>
 		</select>
 	</td>
+</tr>
+<?php
+}
+?>
 <tr>
 	<td>Title:</td>
 	<td><input type="text" name="title" size="65" value="<?php echo $rec['desc']; ?>" /></td>
@@ -66,8 +88,16 @@ if ($_REQUEST['del_id'])
 <tr>
 	<td>Category:</td>
 	<td><input type="text" name="category" size="65" value="<?php echo $rec['category']; ?>" /></td>
-	<td>Completed:</td>
-	<td align="right"><input type="checkbox" name="completed" value="100"<?php echo (($rec['completed'] > 0)?' checked="checked"':''); ?> /></td>
+	<td>Status:</td>
+	<td align="right">
+		<!-- <input type="checkbox" name="completed" value="100"<?php echo (($rec['completed'] > 0)?' checked="checked"':''); ?> /> -->
+		<select name="state">
+<?php
+	foreach ($cfg['states'] as $state => $state_name)
+		echo '<option value="'.$state.'"'. (($state == $rec['state'])?' selected':'').'>'.$state_name.'</option>';
+?>
+		</select>
+	</td>
 </tr>
 <tr>
 	<td>Notes:</td>

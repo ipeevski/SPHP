@@ -61,7 +61,7 @@ else
 {
 	if (isset($_GET['complete']))
 	{
-		$sql = 'UPDATE records SET completed = 100 WHERE id = ' . $_GET['complete'];
+		$sql = 'UPDATE records SET state = 100 WHERE id = ' . $_GET['complete'];
 		db_exec($sql);
 	}
 	
@@ -72,8 +72,9 @@ else
 	
 	$sql = '
 SELECT chests.*, sum(money) as balance
-FROM chests, records 
+FROM chests, records
 WHERE acc = chests.id
+AND user = ' . $_SESSION['user']  . '
 GROUP BY chests.id';
 	$accounts = db_loadList($sql);
 	foreach ($accounts as $a)
@@ -170,4 +171,7 @@ AND user = ' . $_SESSION['user'];
 
 	//include('graph.php');
 }
+
+echo $_SESSION['msg'];
+unset($_SESSION['msg']);
 ?>

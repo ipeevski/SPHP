@@ -3,8 +3,9 @@ echo '<table align="center">';
 echo '<tr><td>Name</td><td>Balance</td></tr>';
 $sql = '
 SELECT chests.*, sum(money) as balance
-FROM chests, records 
+FROM chests, records
 WHERE acc = chests.id
+AND user = ' . $_SESSION['user']  . '
 GROUP BY chests.id';
 $accs = db_loadList($sql);
 foreach ($accs as $acc)

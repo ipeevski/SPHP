@@ -10,6 +10,13 @@ td
 	font-size: 12px;
 }
 
+.small
+{
+	font-size: 9pt;
+	border: 1px solid black;
+	padding: 5px;
+}
+
 .negative
 {
 	color: red;

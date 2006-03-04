@@ -5,6 +5,7 @@ $sql = '
 SELECT records.*, sum(money) as balance
 FROM chests, records 
 WHERE chests.id='.$_SESSION['acc'] . '
+AND user = ' . $_SESSION['user']  . '
 AND acc = chests.id
 GROUP BY chests.id';
 list( $a ) = db_loadList($sql);
@@ -25,7 +26,7 @@ echo '
 	<td>Date</td>
 	<td>Category</td>
 	<td>To/From</td>
-	<td width="100%">Desc</td>
+	<td width="100%">Title</td>
 	<td>Value</td>
 	<td>Balance</td>
 </tr>';
@@ -44,19 +45,21 @@ for($i = count($records) - 1; $i >= 0; $i--)
 $rowstyle='odd';
 foreach ($records as $r)
 {
+	foreach($cfg['text_fields'] as $sql_field)
+		$r[$sql_field] = stripslashes($r[$sql_field]);
 //	if ($r['balance'] < 0)
 //		$r['balance'] = '<span class="negative">'.$r['balance'].'</span>';
 //	if ($r['money'] < 0)
 //		$r['money'] = '.$r['money'].'</span>';
   echo '
-<tr class="' . (($r['completed'] > 0)?$rowstyle:'incomplete') . '">
+<tr class="' . (($r['state'] > 0)?$rowstyle:'incomplete') . '">
 	<td>' . (($r['completed'] > 0)?'&nbsp;':'<a href="index.php?complete='.$r['id'].'">c</a>') . '</td>
 	<td><a href="index.php?p=enter&del_id=' . $r['id'] . '">del</a></td>
 	<td><a href="index.php?p=enter&id=' . $r['id'] . '">edit</a></td>
 	<td nowrap>'.$r['date'].'</td>
 	<td nowrap>'.$r['category'].'</td>
 	<td nowrap>'.$r['person'].'</td>
-	<td>'.$r['desc'].'</td>
+	<td>'.$r['desc'].'<br/><div class="small">'.$r['notes'].'</div></td>
 	<td align="right" nowrap>' . $r['disp_money'] . '</td>
 	<td align="right" nowrap>' . $r['balance'] . '</td>
 </tr>';

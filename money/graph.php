@@ -13,9 +13,10 @@ $graph_title = $_SESSION[$id]['graph_title'];
 $graph_array = $_SESSION[$id]['graph_array'];
 $graph_titles = array();
 $graph_data = array();
+if (!empty($graph_array))
 foreach($graph_array as $key => $value)
 {
-	$graph_titles[] = $key;
+	$graph_titles[] = ((strlen($key) > 20)?(substr($key, 0, 7) . '...'.substr($key, -10, 10)):$key);
 	$graph_data[] = $value;
 }
 
