@@ -19,7 +19,7 @@ function format_id($id)
 }
 
 $sql = '
-SELECT *, messages.id as id
+SELECT *, messages.id as id, messages.id as parent
 FROM messages
 LEFT JOIN users ON users.id = poster
 WHERE messages.id = '.$id;
@@ -41,6 +41,7 @@ ORDER BY messages.posted
 LIMIT '.($start*$pagesize).',' . $pagesize;
 $msgs = db_loadList($sql);
 echo mysql_error();
+//echo '<pre>';print_r($msgs);echo '</pre>';
 ?>
 
 <script type="text/javascript">
@@ -57,6 +58,7 @@ echo "
   msgs[{$main_msg['id']}]['msg'] = '" . str_replace("\r\n", '\\n\\' . "\n", addslashes($main_msg['message'])) . "';
   msgs[{$main_msg['id']}]['quote'] = '" . str_replace("\r\n", '\\n\\' . "\n", addslashes($main_msg['user'] . ': <div class=\"quote\">' . $main_msg['message'])) . "</div>';
 ";
+
 
 foreach($msgs as $msg)
 {
@@ -176,11 +178,12 @@ ORDER BY posted DESC';
 	//$parent = $id;
 	//$quote = $msg; include('post.php');
 	
-	$all_messages[] = $msg;
+	$all_messages[$msg['id']] = $msg;
 //	$smarty->assign('message', $msg);
 //	display('message');
 }
 $smarty->assign('messages', $all_messages);
+//echo '<pre>';print_r($all_messages);echo '</pre>';
 display('messages');
 ?>
 </table>
