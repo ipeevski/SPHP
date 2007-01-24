@@ -63,11 +63,12 @@ function xml_fileinfo($file)
 	}
 	if ($do_exif && $fileinfo['type'] == 'images')
 	{
-		foreach($file['children'][1]['attrs'] as $tagname=>$tag)
-		{
-			$tagname = str_replace('_', ' ', strtolower($tagname));
-			$fileinfo['exif'][$tagname] = $tag;
-		}
+		if (is_array($file['children'][1]['attrs']))
+			foreach($file['children'][1]['attrs'] as $tagname=>$tag)
+			{
+				$tagname = str_replace('_', ' ', strtolower($tagname));
+				$fileinfo['exif'][$tagname] = $tag;
+			}
 	}
 
 	return $fileinfo;

@@ -87,7 +87,7 @@ foreach ($images as $iname=>$info)// = $start; $i < $pagesize+$start && $i < cou
 	 	exif_tab($iname);
   if ($view == 't')
   {
-    if (($i-$start)%4 == 0)
+    if (($i-$start)%$page_w == 0)
       	echo '<tr valign="bottom">';
   	
     echo '
@@ -102,10 +102,10 @@ foreach ($images as $iname=>$info)// = $start; $i < $pagesize+$start && $i < cou
       <span class="highlight">Resolution:</span> '.$info['w'].'x'.$info['h'].'<br />
       <span class="highlight">Size:</span> '.$info['size'].'<br />';
 		if ($do_exif)
-  		echo '<a href="javascript:void(0);" onClick="hide(\''.$iname.'\')">EXIF info</a>';
+  		echo '<a href="javascript:void(0);" onClick="hide_pic(\''.$iname.'\')">EXIF info</a>';
 		echo '
     </td>';
-    if (($i-$start)%4 == 3)
+    if (($i-$start)%$page_w == $page_h)
       echo '</tr>';
 	}
 	else if ($view == 'l')
@@ -124,7 +124,7 @@ foreach ($images as $iname=>$info)// = $start; $i < $pagesize+$start && $i < cou
 		'.$info['w'].'x'.$info['h'].'<br />
 		'.$info['size'].'</td>';
 		if ($do_exif)
-			echo '<td><a href="javascript:void(0);" onClick="hide(\''.$iname.'\')">EXIF info</a></td>';
+			echo '<td><a href="javascript:void(0);" onClick="hide_pic(\''.$iname.'\')">EXIF info</a></td>';
 		echo '
 	</tr>';
 	}
@@ -140,7 +140,7 @@ foreach ($images as $iname=>$info)// = $start; $i < $pagesize+$start && $i < cou
 		<td>'.$info['w'].'x'.$info['h'].'</td>
 		<td>'.$info['size'].'</td>';
 		if ($do_exif)
-			echo '<td><a href="javascript:void(0);" onClick="hide(\''.$iname.'\')">EXIF info</a></td>';
+			echo '<td><a href="javascript:void(0);" onClick="hide_pic(\''.$iname.'\')">EXIF info</a></td>';
 		echo '
 	</tr>';
 	}

@@ -1,4 +1,4 @@
-function hide(pic)
+function hide_pic(pic)
 {
  	var elements = document.getElementsByTagName('div');
 	var flag = (document.getElementById('pic_'+pic).style.display == 'none');

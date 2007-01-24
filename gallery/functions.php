@@ -31,20 +31,29 @@ function resize($file)
   $maxH = $conf_thumbs['maxH'];
   $quality = $conf_thumbs['quality'];
 
-  $src = imagecreatefromjpeg($dir.'/'.$file);
+	if (strtolower(substr($file, -3)) == 'jpg')
+  	$src = imagecreatefromjpeg($dir.'/'.$file);
+  else
+  	$src = imagecreatefromgif($dir.'/'.$file);
+  	
   $sw =  imageSX($src);
   $sh =  imageSY($src);
-  if ($sw * $resizeAmount > $maxW)
+
+  if ($maxW > 0 && $sw * $resizeAmount > $maxW)
      $resizeAmount = ($maxW/($sw*$resizeAmount)) * $resizeAmount;
-  if ($sh * $resizeAmount > $maxH)
+  if ($maxH > 0 && $sh * $resizeAmount > $maxH)
      $resizeAmount = ($maxH/($sh*$resizeAmount)) * $resizeAmount;
 
   $rw = $sw * $resizeAmount;
   $rh = $sh * $resizeAmount;
 
-  $img = imageCreateTrueColor($rw, $rh);
-        imageAntialias($img, true);
-        imageInterlace($img, 1);
+  if (strtolower(substr($file, -3)) == 'jpg')
+  	$img = imageCreateTrueColor($rw, $rh);
+  else
+  	$img = imageCreate($rw, $rh);
+
+	imageAntialias($img, true);
+	imageInterlace($img, 1);
 
   imageCopyResampled ( $img, $src, 0, 0, 0, 0,
                   $rw, $rh, $sw, $sh);
@@ -59,8 +68,7 @@ function resize($file)
 
 function preload()
 {
-  global $dir, $prefix, $files, $types, 
-	$do_exif, $do_xml;
+  global $dir, $prefix, $files, $types, $do_exif, $do_xml;
 	global $totalcount;
   
   $xml_data = '';
@@ -100,6 +108,7 @@ function preload()
     $count = 0;
     while (($file = readdir($dh)) !== false)
     {
+			$exif_data = array();
 echo '.';
 if (++$totalcount % 100 == 1)
 	echo '<br />';
@@ -124,7 +133,7 @@ flush();
                           'date'=>date("d/m/Y H:i", filemtime($dir.'/'.$file)),
 													'type'=>file_type($file)); 
 
-				if ($do_xml)
+				if ($do_xml && !in_array($file, $types['ignore']))
 	        $xml_data .= '<file 
 	name="'.$file.'" 
 	size="'.filesize($dir.'/'.$file).'"
@@ -170,7 +179,7 @@ flush();
   
   					$fileinfo = array_merge($fileinfo, array('exif'=>$exif_data));
   				
-  					if ($do_xml)
+  					if ($do_xml && $exif_data)
   					{
                 $xml_data .= '<exif';
                 foreach($exif_data as $tagname => $tag)
@@ -207,17 +216,12 @@ flush();
 ' . $xml_data . '</gallery>'; 
   
       $xml_path = $dir . '/' . $files['xml'];
-      if (is_writable($xml_path)) 
-      {
-        $xml_file = fopen($xml_path, 'w+');
-        if (!$xml_file)
-          echo 'cant open the file';
-        if (fwrite($xml_file, $xml_data) === FALSE)
-          echo 'error';
-        fclose($xml_file);
-      }
-      else
-        echo 'xml file not writable: ' . $xml_path . '<br />';
+      $xml_file = fopen($xml_path, 'w');
+      if (!$xml_file)
+        echo 'cant open the file';
+      if (fwrite($xml_file, $xml_data) === FALSE)
+        echo 'error';
+      fclose($xml_file);
 		}
 
     if ($dir != '.')
@@ -243,14 +247,19 @@ function exif_tab($i)
 		global $images;
 
 	  echo '
-<div id="pic_'.$i.'" style="max-width: 200px;background-color: lightblue; border: 1px solid; padding: 20px;position: absolute; top: 20px; left: 0px; display:none; text-align: left"><br />
+<div id="pic_'.$i.'" style="max-width: 200px;background-color: lightblue; border: 1px solid; padding: 20px;position: absolute; top: 20px; left: 0px; display:none; text-align: left" onClick="hide_pic(\''.$i.'\')"><br />
 ';
         echo '<h2>EXIF info</h2>
 ';
-        echo '<a style="color: black; background-color: lightblue; border: 1px solid black; position: absolute; top: -15px; left: 220px" href="javascript:void();" onClick="hide('.$i.')">x</a>';
+        echo '<a style="color: black; background-color: lightblue; border: 1px solid black; position: absolute; top: -15px; left: 220px" href="javascript:void(0);" onClick="hide_pic(\''.$i.'\')">x</a>';
     echo '<span class="highlight">Bits:</span> '.$images[$i]['bits'] . '<br />';
-        foreach($images[$i]['exif'] as $key=>$value)
-      echo "<span class=\"highlight\">$key:</span> $value<br />";
+        if ($images[$i]['exif'])
+        {
+        	foreach($images[$i]['exif'] as $key=>$value)
+      			echo "<span class=\"highlight\">$key:</span> $value<br />";
+        }
+        else
+        	echo 'more exif info not available';
     echo '</div>';
 }
 
