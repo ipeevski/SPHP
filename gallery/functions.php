@@ -32,7 +32,6 @@ function resize($file)
   $quality = $conf_thumbs['quality'];
 
 	$image_type = image_type($dir.'/'.$file);
-	echo $image_type;
 
 	$func = 'imagecreatefrom' . $image_type; 
 	$src = $func($dir.'/'.$file);
