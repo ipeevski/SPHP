@@ -98,7 +98,7 @@ foreach ($images as $iname=>$info)// = $start; $i < $pagesize+$start && $i < cou
       <a id="'.$i.'" href="'.$imgdir.$iname.'"><img src="'.$imgdir.$prefix.$iname.'" border="0" alt="picture" /></a><br />
   		<hr />
       <span class="highlight">Name:</span> '.$info['name'].'<br />
-      <span class="highlight">Date:</span> '.$info['date'].'<br />
+      <span class="highlight">Date:</span> '.date("d/m/Y H:i", $info['date']).'<br />
       <span class="highlight">Resolution:</span> '.$info['w'].'x'.$info['h'].'<br />
       <span class="highlight">Size:</span> '.$info['size'].'<br />';
 		if ($do_exif)
@@ -120,7 +120,7 @@ foreach ($images as $iname=>$info)// = $start; $i < $pagesize+$start && $i < cou
 			<img src="'.$imgdir.$prefix.$iname.'" alt="picture" width="100" /></a>
 		</td>
 		<td>'.$iname.'<br />
-		'.$info['date'].'<br />
+		'.date("d/m/Y H:i", $info['date']).'<br />
 		'.$info['w'].'x'.$info['h'].'<br />
 		'.$info['size'].'</td>';
 		if ($do_exif)
@@ -136,7 +136,7 @@ foreach ($images as $iname=>$info)// = $start; $i < $pagesize+$start && $i < cou
 		if ($i + 1 == $image)
 			echo ' style="border: 3px solid; border-color: blue"';
 		echo '><a id="'.$i.'" href="'.$imgdir.$iname.'">'.$imgdir.$iname.'</a></td>
-		<td>'.$info['date'].'</td>
+		<td>'.date("d/m/Y H:i", $info['date']).'</td>
 		<td>'.$info['w'].'x'.$info['h'].'</td>
 		<td>'.$info['size'].'</td>';
 		if ($do_exif)

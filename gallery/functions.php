@@ -31,10 +31,11 @@ function resize($file)
   $maxH = $conf_thumbs['maxH'];
   $quality = $conf_thumbs['quality'];
 
-	if (strtolower(substr($file, -3)) == 'jpg')
-  	$src = imagecreatefromjpeg($dir.'/'.$file);
-  else
-  	$src = imagecreatefromgif($dir.'/'.$file);
+	$image_type = image_type($dir.'/'.$file);
+	echo $image_type;
+
+	$func = 'imagecreatefrom' . $image_type; 
+	$src = $func($dir.'/'.$file);
   	
   $sw =  imageSX($src);
   $sh =  imageSY($src);
@@ -47,7 +48,7 @@ function resize($file)
   $rw = $sw * $resizeAmount;
   $rh = $sh * $resizeAmount;
 
-  if (strtolower(substr($file, -3)) == 'jpg')
+  if ($image_type == 'jpeg')
   	$img = imageCreateTrueColor($rw, $rh);
   else
   	$img = imageCreate($rw, $rh);
@@ -58,12 +59,25 @@ function resize($file)
   imageCopyResampled ( $img, $src, 0, 0, 0, 0,
                   $rw, $rh, $sw, $sh);
   if (substr($file, 0, 4) != $prefix)
-		if (strtolower(substr($file, -3)) == 'jpg')
-	    imagejpeg ( $img, $dir.'/'.$prefix.$file, $quality );
-		else
-			imagegif( $img, $dir.'/'.$prefix.$file, $quality );
-
+  {
+		$func = 'image' . $image_type; 
+	  $func( $img, $dir.'/'.$prefix.$file, $quality );
+  }
 //  return $img;
+}
+
+function image_type($filename)
+{
+	$ext = substr($filename, strrpos($filename, '.') + 1);
+	$ext = strtolower($ext);
+	if ($ext == 'jpg' or $ext == 'jpeg')
+		return 'jpeg';
+	elseif ($ext == 'gif')
+		return 'gif';
+	elseif ($ext == 'png')
+		return 'png';
+	else
+		return false;
 }
 
 function preload()
@@ -130,10 +144,10 @@ flush();
       {
         $fileinfo = array('name'=>$file,
                           'size'=>formatsize(filesize($dir.'/'.$file)),
-                          'date'=>date("d/m/Y H:i", filemtime($dir.'/'.$file)),
+                          'date'=>filemtime($dir.'/'.$file),
 													'type'=>file_type($file)); 
 
-				if ($do_xml && !in_array($file, $types['ignore']))
+				if ($do_xml && image_type($file))
 	        $xml_data .= '<file 
 	name="'.$file.'" 
 	size="'.filesize($dir.'/'.$file).'"
@@ -164,7 +178,7 @@ flush();
                                           'h'=>$info[1],
                                           'bits'=>$info['bits']));
 
-					if ($do_xml)
+					if ($do_xml && image_type($file))
 						$xml_data .= '<dimenstions 
 	w="'.$info[0].'"
 	h="'.$info[1].'"
@@ -190,7 +204,7 @@ flush();
   
   				$_SESSION['images'][$dir][$file] = $fileinfo;
         }
-				if ($do_xml)
+				if ($do_xml && image_type($file))
 		      $xml_data .= "</file>\n";
       }
     }
@@ -226,9 +240,9 @@ flush();
 
     if ($dir != '.')
 		{
-			if (is_writable($dir.'/'.$files['index']))
-	    {
-  	    $index_file = fopen($dir.'/'.$files['index'], 'w+');
+			$index_file = fopen($dir.'/'.$files['index'], 'w+');
+			if ($index_file)
+			{
     	  $levels = strlen($dir) - strlen(str_replace('/', '', $dir));
       	$backdir = '';
 	      while ($levels-- > 0)
