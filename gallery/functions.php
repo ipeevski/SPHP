@@ -288,6 +288,8 @@ function display_menu_galleries()
 	      $title = $_SESSION['info'][$key]['title'];
       if (empty($title))
         $title = substr($key, strrpos($key, '/')+1);
+			if ($title[0] == '.')
+				continue;
       if ($key == '.')
         echo '[<a href="?gallery='.$key.'">Main ('.count($val).' images)</a>]';
       else if ($type == 'list')

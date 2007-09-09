@@ -31,9 +31,15 @@ if (!isset($_SESSION['style']))
 if (!isset($_SESSION['menu']))
   $_SESSION['menu'] = 'list';
 
-$page = isset($_GET['page'])?$_GET['page']:0;
-if (!empty($_REQUEST['gallery']))
-  $_SESSION['gallery'] = $_REQUEST['gallery'];
+$page = isset($_GET['page'])?((int)$_GET['page']):0;
+if (!empty($_REQUEST['gallery'])) {
+	$gal = $_REQUEST['gallery'];
+	$gal = addslashes($gal);
+	$gal = str_replace(array('..', './'), array('.', ''), $gal);
+	if ($gal[0] == '/')
+		$gal = substr($gal, 1);
+	$_SESSION['gallery'] = $gal;
+}
 if (!empty($_SESSION['gallery']))
   $dir = $_SESSION['gallery'];
 
