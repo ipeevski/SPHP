@@ -20,6 +20,7 @@ if (empty($_SESSION['images']) || isset($_GET['reload']))
   session_start();
   ini_set('max_execution_time', 10000000);
 	echo 'Loading images now (can take a while): ';
+	$_SESSION['dirs'] = array();
   preload();
 	echo '<br />';
 }
@@ -65,7 +66,7 @@ $start = $page*$pagesize;
 </head>
 <body>
 <?php
-if (file_exists($dir.'/gallery.inc.php'))
+if (in_array($dir, $_SESSION['dirs']) && file_exists($dir.'/gallery.inc.php'))
   include($dir.'/gallery.inc.php');
 else
   echo '<h1>' . $dir . '</h1>';

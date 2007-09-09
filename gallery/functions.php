@@ -85,6 +85,7 @@ function preload()
 	global $totalcount;
   
   $xml_data = '';
+	$_SESSION['dirs'][] = $dir;
   if ($dh = opendir($dir))
   {
     $_SESSION['images'][$dir] = array();
