@@ -1,0 +1,13 @@
+body {
+	font-family: Verdana, sans-serif;
+	font-size: 12px;
+}
+
+h1 {
+	text-align: center;
+}
+
+select, textarea {
+	border: 1px solid gray;
+	padding: 2px;
+}
