@@ -17,7 +17,9 @@ var EditArea_sync = {
 		// desactivate the "f" character
 
 		if (!AltPressed(e) && !CtrlPressed(e) && !ShiftPressed(e)) {
-			this.execCommand('sync', parent.editAreaLoader.getCurrentFile());
+			if (!this.timer) {
+				this.timer = setTimeout("EditArea_sync.execCommand('sync', parent.editAreaLoader.getCurrentFile())", 10000);
+			}
 		}
 		
 		return true;
@@ -37,7 +39,9 @@ var EditArea_sync = {
 				//alert('syncing file ' + parent.editAreaLoader.getCurrentFile('code').id);
 				//parent.lastfile = parent.editAreaLoader.getCurrentFile('code');
 				parent.ajax('ajax/filetime.php?file='+parent.editAreaLoader.getCurrentFile('code').id, 'sync');
-				
+			
+				this.timer = 0;
+
 				return false;
 		}
 		// Pass to next handler in chain

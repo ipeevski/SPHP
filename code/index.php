@@ -87,14 +87,15 @@ include('editarea.php');
 	</td>
 	<td valign="top">
 		<h1>Chat</h1>
+		Nick: <input type="text" id="avatar" name="avatar" value="programmer" /><br />
 		Remote:<br />
 		<textarea id="chat" name="chat" cols="40" rows="10" readonly="readonly"></textarea>
 		<br />
 		Local:<br />
-		<textarea id="say" name="say" cols="40" rows="10" onchange="ajax('ajax/savefile.php?file=../.chat&content=' + encodeURIComponent(document.getElementById('chat').value), 'chat');"></textarea>
+		<textarea id="say" name="say" cols="40" rows="10" onkeypress="if (event.keyCode == 13) return window.say(this.value)"></textarea>
 		<br />
 		Messages: <br />
-		<div id="msgs" style="border: 1px solid gray; width: 344px; min-height: 195px;">
+		<div id="msgs" style="border: 1px solid gray; width: 344px; min-height: 173px;">
 		</div>
 	</td>
 </tr>
@@ -104,22 +105,38 @@ include('editarea.php');
 
 
 <script type="text/javascript">
+	var timer;
+
 	function monitor()
 	{
-		if (editAreaLoader.getCurrentFile('code') && editAreaLoader.getCurrentFile('code').id) {
-			ajax('ajax/filetime.php?file='+editAreaLoader.getCurrentFile('code').id, 'sync');
-		}
-		ajax('ajax/loadfile.php?file=../.chat&escape=html', 'chat');
-		setTimeout('monitor()', 1000);
+//		if (editAreaLoader.getCurrentFile('code') && editAreaLoader.getCurrentFile('code').id) {
+//			ajax('ajax/filetime.php?file='+editAreaLoader.getCurrentFile('code').id, 'sync');
+//		}
+//		ajax('ajax/loadfile.php?file=./chat/' + document.getElementById('avatar').value + '&escape=html', 'chat');
+		ajax('ajax/chat.php', 'chat');
+	}
+	
+	function say(text)
+	{
+		var say = document.getElementById('say');
+		person = document.getElementById('avatar').value;
+		ajax('ajax/chat.php?person='+person+'&content='+encodeURIComponent(text), 'chat');
+		say.value = '';
+		// ajax('ajax/savefile.php?file=./chat/'+person+'&content=' + encodeURIComponent(text), '');
+
+		return false;
 	}
 	
 	function chat(text) 
 	{
-		document.getElementById('chat').value = text;
+		var chat = document.getElementById('chat');
+		chat.value = text;
+		chat.scrollTop = chat.scrollHeight;
 	}
 	
-	ajax('ajax/loadfile.php?file=../.chat&escape=html', 'chat');
-	//monitor();
+	ajax('ajax/chat.php', 'chat');
+	// setInterval('monitor()', 2000);
 </script>
+<input type="checkbox" onchange="if (this.checked) { window.timer = setInterval('monitor()', 2000); } else { clearInterval(window.timer); }" />Enable monitoring
 </body>
 </html>
