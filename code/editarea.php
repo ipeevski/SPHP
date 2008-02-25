@@ -32,7 +32,7 @@ var lastfile = '';
 			
 			ajax('ajax/savefile.php?file='+filename+'&content='+encodeURIComponent(content), '');
 			editAreaLoader.setFileEditedMode('<?=$name?>', filename, false);
-			ajax('ajax/filetime.php?file='+f.id, 'set_mtime');
+			ajax('ajax/filetime.php?file='+filename, 'set_mtime');
 		}
 				
 		function my_load(id){
@@ -96,15 +96,15 @@ var lastfile = '';
 		
 		function sync(mtime)
 		{
-			f = parent.editAreaLoader.getCurrentFile('<?=$name?>');
-			
-			if (f.mtime != mtime) {
-				alert('file changed!');
-				editAreaLoader.setValue('<?=$name?>', 'reloading ...');
-				
-				ajax('ajax/loadfile.php?file='+f.id+'&escape=javascript', 'load_codefile');
-				ajax('ajax/filetime.php?file='+f.id, 'set_mtime');
-			}
+//			f = parent.editAreaLoader.getCurrentFile('<?=$name?>');
+//			
+//			if (f.mtime != mtime) {
+//				alert('file changed!');
+//				editAreaLoader.setValue('<?=$name?>', 'reloading ...');
+//				
+//				ajax('ajax/loadfile.php?file='+f.id+'&escape=javascript', 'load_codefile');
+//				ajax('ajax/filetime.php?file='+f.id, 'set_mtime');
+//			}
 		}
 </script>
 <div id="editor">
