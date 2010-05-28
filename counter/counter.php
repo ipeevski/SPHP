@@ -1,6 +1,6 @@
 <?php 
-	$f = fopen('counter.txt', 'a');
+	$filename = 'counter.txt';
+	$f = fopen($filename, 'a');
 	fwrite($f, '.');
 	fclose($f);
-	echo filesize('counter.txt') . ' visits';
-?>
+	echo filesize($filename) . ' visits';
