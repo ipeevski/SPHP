@@ -247,4 +247,3 @@ function my_mysql_query($string)
   mysql_select_db($db);
   return mysql_query($string);
 }
-?>

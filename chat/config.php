@@ -1,5 +1,5 @@
 <?php 
-$dbuser = 'root';
-$dbpass = '';
+$dbuser = 'web';
+$dbpass = 'passwd';
 $db = 'chat';
 ?>
