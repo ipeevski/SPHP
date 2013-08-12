@@ -16,8 +16,10 @@ if (!empty($_GET['id'])) 					// Show one thread
   $id = $_GET['id'];
   $q = my_mysql_query("select * from posts where id = '$id'");
 }
-else if (!empty($_GET['user']))		// Show all messages from a user
-  $q = my_mysql_query("select * from posts where user = '{$_GET['user']}'");
+else if (!empty($_GET['user']))	{	// Show all messages from a user
+  $user = mysql_real_escape_string($_GET['user']);
+  $q = my_mysql_query("select * from posts where user = '$user'");
+}
 else															// Show all messages
   $q = my_mysql_query("select * from posts order by timestamp desc");
 
