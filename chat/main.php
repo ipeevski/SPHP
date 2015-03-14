@@ -38,7 +38,7 @@
       else
       {
         if (substr($results['post'], 0, 3) == "/me")
-          $line .= '<span style="color:purple">* ' . $results['user'] . substr($results['post'],3) . '</span>';
+          $line .= '<span style="color:purple">* ' . $results['user'] . substr($results['post'], 3) . '</span>';
         else 
 				{
           $line .= '<span style="font-weight: bold">' . $results['user'] . '</span>&gt;';
