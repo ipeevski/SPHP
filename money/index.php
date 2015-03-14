@@ -1,4 +1,5 @@
 <?php
+error_reporting(E_WARNING);
 include('config.php');
 include('db.php');
 session_start();
@@ -8,8 +9,7 @@ connect();
 include('header.php');
 
 
-session_start();
-if ($_GET['logout'] == 1)
+if (!empty($_GET['logout']))
 {
 	unset($_SESSION['user']);
 }
@@ -51,17 +51,14 @@ AND pass = '" . md5($_POST['password']) ."'";
 }
 
 
-if ($_GET['p'])
-{
+if (!empty($_GET['p'])) {
 	include($_GET['p'].'.php');
-	if ($_GET['p'] == 'enter')
+	if ($_GET['p'] == 'enter') {
 		include('list.php');
-}
-else
-{
-	if (isset($_GET['complete']))
-	{
-		$sql = 'UPDATE records SET state = 100 WHERE id = ' . $_GET['complete'];
+	}
+} else {
+	if (isset($_GET['complete'])) {
+		$sql = 'UPDATE records SET completed = 100 WHERE id = ' . $_GET['complete'];
 		db_exec($sql);
 	}
 	
@@ -92,34 +89,31 @@ WHERE chests.id = acc
 AND user = ' . $_SESSION['user'];
 	$accounts = db_loadList($sql);
 
-	foreach ($accounts as $a)
-	{
-		if ($a['money'] >= 0)
-		{
+	foreach ($accounts as $a) {
+		if ($a['money'] >= 0) {
 			$graph_ci[$a['category']] += $a['money'];
 			$graph_ui[$a['person']] += $a['money'];
-		}
-		else
-		{
+		} else {
 			$graph_ce[$a['category']] += $a['money'];
 			$graph_ue[$a['person']] += $a['money'];
 		}
 		
 		$month = substr($a['date'], 5, 2);
 		$monthly[$month] += $a['money'];
-		if ($a['money'] > 0)
+		if ($a['money'] > 0) {
 			$mplus[$month] += $a['money'];
-		else
+		} else {
 			$mminus[$month] += $a['money'];
+		}
 		
-		if ($month == date('m'))
-		{
+		if ($month == date('m')) {
 			$day = substr($a['date'], 8);
 			$daily[$day] += $a['money'];
-			if ($a['money'] > 0)
+			if ($a['money'] > 0) {
 				$dplus[$day] += $a['money'];
-			else
+			} else {
 				$dminus[$day] += $a['money'];
+			}
 		}
 	}
 	//print_r($monthly);
@@ -174,4 +168,3 @@ AND user = ' . $_SESSION['user'];
 
 echo $_SESSION['msg'];
 unset($_SESSION['msg']);
-?>

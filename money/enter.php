@@ -1,15 +1,15 @@
 <?php
 $text_fields = $cfg['text_fields']; 
-if ($_POST['enter'])
-{
+if ($_POST['enter']) {
 	$_SESSION['acc'] = $_POST['account'];
 	
-	foreach($text_fields as $sql_field)
+	foreach($text_fields as $sql_field) {
 		$_POST[$sql_field] = addslashes($_POST[$sql_field]);
+	}
 		
-	if (empty($_POST['id']))
+	if (empty($_POST['id'])) {
 		$sql = "INSERT INTO records VALUES(NULL, {$_SESSION['acc']}, '{$_POST['person']}', {$_POST['value']}, '{$_POST['date']}', '{$_POST['state']}', '{$_POST['category']}', '{$_POST['title']}', '{$_POST['notes']}')";
-	else
+	} else {
 		$sql = "
 UPDATE records 
 SET 
@@ -19,18 +19,19 @@ person='{$_POST['person']}',
 `date`='{$_POST['date']}', 
 category='{$_POST['category']}', 
 notes='{$_POST['notes']}',
-state='{$_POST['state']}'
+completed='{$_POST['state']}'
 WHERE id={$_POST['id']}";
+	}
 
 	db_exec($sql);
 
-	if (!empty($_POST['oldvalue']))
+	if (!empty($_POST['oldvalue'])) {
 		$_POST['value'] -= $_POST['oldvalue'];
+	}
 
 	//db_exec('UPDATE chests SET balance=balance+' . $_POST['value'] . ' WHERE id=' . $_POST['account']);
 }
-if ($_REQUEST['id'])
-{
+if ($_REQUEST['id']) {
 	$rec = db_loadList('
 SELECT *
 FROM records
@@ -48,10 +49,9 @@ if ($_REQUEST['del_id'])
 <input type="hidden" name="oldvalue" value="<?php echo $rec['money']; ?>" />
 <table align="center">
 <?php
-if (isset($rec['acc']))
+if (isset($rec['acc'])) {
 	echo '<input type="hidden" name="account" value="' . $rec['acc'] . '" />';
-else
-{
+} else {
 ?>
 <tr>
 	<td colspan="4">
@@ -59,8 +59,8 @@ else
 <?php
 	$sql = '
 select chests.*, sum(money) as balance 
-from chests, records 
-where records.acc = chests.id 
+from chests
+LEFT JOIN records ON records.acc = chests.id 
 AND user = ' . $_SESSION['user'] . '
 GROUP BY chests.id';
 	$accs = db_loadList($sql);

@@ -1,6 +1,7 @@
 <?php
-if ($_GET['acc'])
+if (!empty($_GET['acc'])) {
 	$_SESSION['acc'] = $_GET['acc'];
+}
 $sql = '
 SELECT records.*, sum(money) as balance
 FROM chests, records 

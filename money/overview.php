@@ -8,11 +8,11 @@ WHERE acc = chests.id
 AND user = ' . $_SESSION['user']  . '
 GROUP BY chests.id';
 $accs = db_loadList($sql);
-foreach ($accs as $acc)
+foreach ($accs as $acc) {
 	echo '
 <tr>
 	<td><a href="?p=list&acc=' . $acc['id']. '">'.$acc['name'].'</a></td>
 	<td align="right"><pre>' . money_format('%#10.2n', $acc['balance']).'</pre></td>
 </tr>';
-echo '<table>';
-?>
+}
+echo '</table>';

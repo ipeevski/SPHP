@@ -7,31 +7,31 @@ session_start();
 $pl = null;
 $graph = null;
 $id = $_GET['gid'];
-$type = $_SESSION[$id]['type'];
-//$type = 'ch';
+
+if (isset($_SESSION[$id]['type'])) {
+	$type = $_SESSION[$id]['type'];
+} else {
+	$type = 'chart';
+}
 $graph_title = $_SESSION[$id]['graph_title'];
 $graph_array = $_SESSION[$id]['graph_array'];
 $graph_titles = array();
 $graph_data = array();
 if (!empty($graph_array))
-foreach($graph_array as $key => $value)
-{
+foreach($graph_array as $key => $value) {
 	$graph_titles[] = ((strlen($key) > 20)?(substr($key, 0, 7) . '...'.substr($key, -10, 10)):$key);
 	$graph_data[] = $value;
 }
 
 // Create the Graph. 
 
-if ($type == 'chart')
-{
+if ($type == 'chart') {
 	include ('lib/jpgraph/jpgraph_bar.php');
 	$graph = new Graph(800,200,'auto');
 	$graph->SetScale("textlin");
 	$graph->xaxis->title->Set("Date");
 	$graph->yaxis->title->Set("Money");
-}
-else
-{
+} else {
 	include ('lib/jpgraph/jpgraph_pie.php');
 	include ('lib/jpgraph/jpgraph_pie3d.php');
 	$graph = new PieGraph(400,200,'auto');
@@ -46,21 +46,17 @@ $graph->title->SetFont(FF_FONT1,FS_BOLD);
 
 
 // Create
-if ($type == 'chart')
-{
+if ($type == 'chart') {
 	$bar = new BarPlot($graph_data);
 	//$months=$gDateLocale->GetShortMonth();
-	foreach($graph_titles as $k => $gt)
-	{
+	foreach($graph_titles as $k => $gt) {
 		//$gt = intval($gt) - 1;
 		//$graph_titles[$k] = $months[$gt];
 		$bar->SetLegend($gt);
 	}
 		
 	$graph->xaxis->SetTickLabels($graph_titles);
-}
-else
-{
+} else {
 	$bar = new PiePlot3D($graph_data);
 	$bar->SetLegends($graph_titles);
 }
@@ -70,15 +66,12 @@ else
 //$alts=array("val=%d","val=%d","val=%d","val=%d","val=%d","val=%d");
 //$p1->SetCSIMTargets($targ,$alts);
 
-if ($type == 'chart')
-{
+if ($type == 'chart') {
 	$bar = new BarPlot($graph_data);
 	//$bar->
 	$bar->value->Show(true);
 	$bar->value->SetFormat("%d $");
-}
-else
-{
+} else {
 // Use absolute label
 	$bar->SetLabelType(1);
 	$bar->value->SetFormat("%d $");
@@ -95,4 +88,3 @@ else
 
 $graph->Add($bar);
 $graph->Stroke();
-?>

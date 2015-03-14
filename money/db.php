@@ -78,7 +78,11 @@ function db_loadColumn($sql)
 function db_loadResult($sql)
 {
 	$arr = db_loadList($sql);
-	return $arr[0][0];
+	if ($arr) {
+		return $arr[0][0];
+	} else {
+		return $arr;
+	}
 }
 
 ?>
