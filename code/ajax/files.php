@@ -25,13 +25,13 @@ function filetree($dir)
 }
 
 header("Content-Type: application/xhtml+xml;charset=iso-8859-1");
-$dir = $_GET['id'] ? stripslashes($_GET['id']) : '\\www\\code\\';
+$dir = isset($_GET['id']) ? stripslashes($_GET['id']) : '\\www\\code\\';
 chdir('../');
 $files = filetree($dir);
 echo '<?xml version="1.0" encoding="iso-8859-1"?>';
 ?>
 
-<tree id="<?=($_GET['top'] ? 0 : $dir)?>">
+<tree id="<?php echo (isset($_GET['top']) ? 0 : $dir)?>">
 <?php
 	//print_r($files);
 

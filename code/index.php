@@ -1,7 +1,8 @@
 <?php
+session_start();
 $dirs = array('./');
-$dir = $_REQUEST['dir'] ? $_REQUEST['dir'] : $dirs[0];
-$_SESSION['dir'] = stripslashes($_POST['dir']);
+$dir = isset($_REQUEST['dir']) ? $_REQUEST['dir'] : $dirs[0];
+$_SESSION['dir'] = stripslashes($dir);
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" >
 <head>
@@ -11,7 +12,7 @@ $_SESSION['dir'] = stripslashes($_POST['dir']);
 	<script type="text/javascript" src="dhtmlxTree/dhtmlxtree.js"></script>
 	<script type="text/javascript" src="ajax.js"></script>
 	<script type="text/javascript">
-		var full_path = '<?=$dir?>';
+		var full_path = '<?php echo $dir?>';
 	</script>
 	<link rel="stylesheet" href="dhtmlxTree/dhtmlxtree.css" type="text/css" />
 	<link rel="stylesheet" href="main.css" type="text/css" />
@@ -28,20 +29,20 @@ $_SESSION['dir'] = stripslashes($_POST['dir']);
 		<select name="dir" onchange="this.form.submit();">
 			<option value=""></option>
 		<?php foreach ($dirs as $d) { ?>
-			<option value="<?=$d?>" <?=($dir == $d ? 'selected="selected"':'')?>><?=$d?></option>
+			<option value="<?php echo $d?>" <?php echo ($dir == $d ? 'selected="selected"':'')?>><?php echo $d?></option>
 		<?php } ?>
 		</select>
 		</form>
 	
 		<div id="treeBox" style="border: 1px solid gray; min-height: 580px; overflow: auto"></div>
 		<script type="text/javascript">  
-		var tree = new dhtmlXTreeObject('treeBox',"100%","100%",'<?=$dir?>');
+		var tree = new dhtmlXTreeObject('treeBox',"100%","100%",'<?php echo $dir?>');
 		tree.setImagePath("dhtmlxTree/imgs/csh_vista/"); 
 		//tree.attachEvent("onClick",onNodeSelect)//set function object to call on node select
 		tree.attachEvent("onDblClick",onNodeDblClick)//set function object to call on node select
 		tree.enableHighlighting(1);
 		tree.setXMLAutoLoading("ajax/files.php"); 
-		tree.loadXML("ajax/files.php?id=<?=$dir?>");
+		tree.loadXML("ajax/files.php?id=<?php echo $dir?>");
 		
 		
 		// Needs dhtmlXMenu extension - http://www.dhtmlx.com/docs/products/dhtmlxMenu/index.shtml
@@ -75,7 +76,6 @@ $_SESSION['dir'] = stripslashes($_POST['dir']);
 		}
 		
 		</script>
-		</div>
 	</div>
 	</td>
 	<td valign="top">
@@ -100,7 +100,6 @@ include('editarea.php');
 	</td>
 </tr>
 </table>
-	</fieldset>
 </form>
 
 
@@ -109,17 +108,18 @@ include('editarea.php');
 
 	function monitor()
 	{
+		var person = document.getElementById('avatar').value;
 //		if (editAreaLoader.getCurrentFile('code') && editAreaLoader.getCurrentFile('code').id) {
 //			ajax('ajax/filetime.php?file='+editAreaLoader.getCurrentFile('code').id, 'sync');
 //		}
 //		ajax('ajax/loadfile.php?file=./chat/' + document.getElementById('avatar').value + '&escape=html', 'chat');
-		ajax('ajax/chat.php', 'chat');
+		ajax('ajax/chat.php?person=' + person, 'chat');
 	}
 	
 	function say(text)
 	{
 		var say = document.getElementById('say');
-		person = document.getElementById('avatar').value;
+		var person = document.getElementById('avatar').value;
 		ajax('ajax/chat.php?person='+person+'&content='+encodeURIComponent(text), 'chat');
 		say.value = '';
 		// ajax('ajax/savefile.php?file=./chat/'+person+'&content=' + encodeURIComponent(text), '');
@@ -133,9 +133,9 @@ include('editarea.php');
 		chat.value = text;
 		chat.scrollTop = chat.scrollHeight;
 	}
-	
-	ajax('ajax/chat.php', 'chat');
-	// setInterval('monitor()', 2000);
+
+	monitor();
+	setInterval('monitor()', 2000);
 </script>
 <input type="checkbox" onchange="if (this.checked) { window.timer = setInterval('monitor()', 2000); } else { clearInterval(window.timer); }" />Enable monitoring
 </body>

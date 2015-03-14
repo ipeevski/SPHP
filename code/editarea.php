@@ -7,7 +7,7 @@ var lastfile = '';
 		
 		// initialisation
 		editAreaLoader.init({
-			id: "<?=$name?>"	// id of the textarea to transform		
+			id: "<?php echo $name?>"	// id of the textarea to transform		
 //			,font_size: "8"
 			,font_family: "verdana, monospace"
 			,start_highlight: true	// if start with highlight
@@ -31,7 +31,7 @@ var lastfile = '';
 			filename = editAreaLoader.getCurrentFile(id).id;
 			
 			ajax('ajax/savefile.php?file='+filename+'&content='+encodeURIComponent(content), '');
-			editAreaLoader.setFileEditedMode('<?=$name?>', filename, false);
+			editAreaLoader.setFileEditedMode('<?php echo $name?>', filename, false);
 			ajax('ajax/filetime.php?file='+filename, 'set_mtime');
 		}
 				
@@ -65,23 +65,23 @@ var lastfile = '';
 		function open_file1()
 		{
 			var new_file= {id: "file1", text: "<a href=\"toto\">\n\tbouh\n</a>\n<!-- it's a comment -->", syntax: 'html'};
-			editAreaLoader.openFile('<?=$name?>', new_file);
+			editAreaLoader.openFile('<?php echo $name?>', new_file);
 		}
 		
 		function close_file1()
 		{
-			editAreaLoader.closeFile('<?=$name?>', "file1");
+			editAreaLoader.closeFile('<?php echo $name?>', "file1");
 		}
 		
 		function load_codefile(text){
 			//alert('setting text: ' + text);
-			editAreaLoader.setValue('<?=$name?>', text);
+			editAreaLoader.setValue('<?php echo $name?>', text);
 		}
 		
 		function set_mtime(text){
 			//alert('setting text: ' + text);
 			
-			editAreaLoader.getCurrentFile('<?=$name?>').mtime = text;
+			editAreaLoader.getCurrentFile('<?php echo $name?>').mtime = text;
 		}
 		
 		function open_codefile(filename)
@@ -90,17 +90,17 @@ var lastfile = '';
 			ext = filename.substring(filename.indexOf('.') + 1);
 
 			var new_file= {id: filename, title: filename.substring(full_path.length), text: '', syntax: ext};
-			editAreaLoader.openFile('<?=$name?>', new_file);
+			editAreaLoader.openFile('<?php echo $name?>', new_file);
 			lastfile = new_file;
 		}
 		
 		function sync(mtime)
 		{
-//			f = parent.editAreaLoader.getCurrentFile('<?=$name?>');
+//			f = parent.editAreaLoader.getCurrentFile('<?php echo $name?>');
 //			
 //			if (f.mtime != mtime) {
 //				alert('file changed!');
-//				editAreaLoader.setValue('<?=$name?>', 'reloading ...');
+//				editAreaLoader.setValue('<?php echo $name?>', 'reloading ...');
 //				
 //				ajax('ajax/loadfile.php?file='+f.id+'&escape=javascript', 'load_codefile');
 //				ajax('ajax/filetime.php?file='+f.id, 'set_mtime');
@@ -108,16 +108,16 @@ var lastfile = '';
 		}
 </script>
 <div id="editor">
-<textarea id="<?=$name?>" style="height:600px; width:600px;" name="<?=$name?>"></textarea>
+<textarea id="<?php echo $name?>" style="height:600px; width:600px;" name="<?php echo $name?>"></textarea>
 
 <p>Custom controls:<br />
-	<!--input type='button' onclick='alert(editAreaLoader.getValue(<?=$name?>"));' value='get value' />
-	<input type='button' onclick='editAreaLoader.setValue(<?=$name?>", "new_value");' value='set value' />
-	<input type='button' onclick='test_getSelectionRange(<?=$name?>");' value='getSelectionRange' />
-	<input type='button' onclick='test_setSelectionRange(<?=$name?>");' value='setSelectionRange' />
-	<input type='button' onclick='test_getSelectedText(<?=$name?>");' value='getSelectedText' />
-	<input type='button' onclick='test_setSelectedText(<?=$name?>");' value='setSelectedText' />
-	<input type='button' onclick='editAreaLoader.insertTags(<?=$name?>", "[OPEN]", "[CLOSE]");' value='insertTags' />
+	<!--input type='button' onclick='alert(editAreaLoader.getValue(<?php echo $name?>"));' value='get value' />
+	<input type='button' onclick='editAreaLoader.setValue(<?php echo $name?>", "new_value");' value='set value' />
+	<input type='button' onclick='test_getSelectionRange(<?php echo $name?>");' value='getSelectionRange' />
+	<input type='button' onclick='test_setSelectionRange(<?php echo $name?>");' value='setSelectionRange' />
+	<input type='button' onclick='test_getSelectedText(<?php echo $name?>");' value='getSelectedText' />
+	<input type='button' onclick='test_setSelectedText(<?php echo $name?>");' value='setSelectedText' />
+	<input type='button' onclick='editAreaLoader.insertTags(<?php echo $name?>", "[OPEN]", "[CLOSE]");' value='insertTags' />
 	<input type='button' onclick='doc_new()' value='new file' /-->
 	<input type='button' onclick='open_file1()' value='open file 1' />
 	<input type='button' onclick='close_file1()' value='close file 1' />

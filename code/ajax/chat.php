@@ -1,4 +1,5 @@
 <?php
+session_start();
 if (isset($_GET['person'])) { 
 	$filename = '../chat/'.stripslashes($_GET['person']);
 } else {
@@ -37,7 +38,7 @@ foreach ($chat as $time => $person_chat) {
 }
 //$fcontent = file_get_contents($filename);
 
-if ($_GET['escape'] == 'html') {
+if (isset($_GET['escape']) and $_GET['escape'] == 'html') {
 	$fcontent = htmlentities($fcontent);
 }
 //if ($_GET['escape'] == 'javascript')
