@@ -10,16 +10,16 @@
     $query = my_mysql_query("select users.user as 'user', lastseen, lastread from users left join readposts on users.user = readposts.user group by users.user");
     $i = 0;
 
-    $usettings= mysql_fetch_array(mysql_query("select * from user_settings where user = '". $_SERVER['PHP_AUTH_USER'] . "'"));
+    $usettings= mysqli_fetch_array(my_mysql_query("select * from user_settings where user = '". $_SERVER['PHP_AUTH_USER'] . "'"));
 
-    $tr = mysql_query("select count(user) as c from posts");
-    $t = mysql_fetch_array($tr);
+    $tr = my_mysql_query("select count(user) as c from posts");
+    $t = mysqli_fetch_array($tr);
     echo "Total Posts: " . $t["c"] . "<br>". pms($_SERVER["PHP_AUTH_USER"]) ."<br>";
 
     $online = 0;
     echo "=== Online ===<br>";
 
-    while ($results = mysql_fetch_array($query))
+    while ($results = mysqli_fetch_array($query))
     {
       $u = $results["user"];
 

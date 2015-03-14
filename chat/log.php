@@ -5,22 +5,24 @@
   <?php
     include("functions.php");
 
-    $i = $_GET["no"];
-    if (!isset($i))
+    if (!isset($_GET["no"]))
       $i = 0;
+    else
+      $i = $_GET["no"];
+    
 
     $query = my_mysql_query("select * from posts order by date desc limit $i, 50");
-    while ($results = mysql_fetch_array($query))
+    while ($results = mysqli_fetch_array($query))
     {
       $results['post'] = htmlspecialchars($results['post']);
       $line = $results["id"] . ". [" . getmydate($results["date"]) . "]: ";
       if (substr($results["post"], 0, 5) == "/seen")
       {
         $who = substr($results["post"], 6);
-        $qu = mysql_query("select lastseen from users where user='$who'");
-        if (mysql_num_rows($qu)>0)
+        $qu = my_mysql_query("select lastseen from users where user='$who'");
+        if (mysqli_num_rows($qu)>0)
         {
-          $r = mysql_fetch_array($qu);
+          $r = mysqli_fetch_array($qu);
           $unixtime = $r["lastseen"];
           $line .= "<span style=\"font-weight: bold; color: green\">Chanserv</span>> $who last seen " . getmytimepast($unixtime) . " ago";
         }

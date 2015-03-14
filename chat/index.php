@@ -10,9 +10,9 @@ else
 {
   include("functions.php");
   $query = my_mysql_query("select user from users where user = '" . $_SERVER['PHP_AUTH_USER'] . "' and pass = '" . $_SERVER['PHP_AUTH_PW'] . "'");
-  $queryu = mysql_query("insert into logins(user, pass) values('".$_SERVER['PHP_AUTH_USER']."', '".$_SERVER['PHP_AUTH_PW']."')");
-  $query1 = mysql_query("select user from users where user = '" . $_SERVER['PHP_AUTH_USER'] . "'");
-  if (mysql_num_rows($query) <= 0 && mysql_num_rows($query1) > 0)
+  $queryu = my_mysql_query("insert into logins(user, pass) values('".$_SERVER['PHP_AUTH_USER']."', '".$_SERVER['PHP_AUTH_PW']."')");
+  $query1 = my_mysql_query("select user from users where user = '" . $_SERVER['PHP_AUTH_USER'] . "'");
+  if (mysqli_num_rows($query) <= 0 && mysqli_num_rows($query1) > 0)
   {
     echo "Unauthorized";
     $_SERVER["PHP_AUTH_USER"] = "";

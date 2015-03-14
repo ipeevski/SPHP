@@ -75,7 +75,7 @@ function iconify($text)
   $text = " " . $text;
   $files = imagesList("images");
   $q = my_mysql_query("select icons from user_settings where user = '" . $_SERVER['PHP_AUTH_USER'] . "'");
-  $r = mysql_fetch_array($q);
+  $r = mysqli_fetch_array($q);
   if ($r['icons'] == 1)
     foreach($files as $word)
 			if (isset($files[$word]))
@@ -106,7 +106,7 @@ function imagesList($dirname)
 
   while(false !== ($file = readdir($dir)))
     for ($i = 0; $i < count($ext); $i++)
-      if (eregi("\.". $ext[$i] ."$", $file)) 
+      if (preg_match("|\.". $ext[$i] ."$|", $file)) 
       {
         $f = $file;
         $files[] = substr($file, 0, strpos($file, '.'));
@@ -123,7 +123,7 @@ function getAllStyles()
 {
 	$styles = '';
   $q = my_mysql_query('select * from user_settings');
-  while($result = mysql_fetch_array($q))
+  while($result = mysqli_fetch_array($q))
   {
     $temp = $result['style'];
     if ($result['color'] != '')
@@ -137,7 +137,7 @@ function getAllStyles()
 
 function userstyle($user)
 {
-  $result = mysql_fetch_array(my_mysql_query("select * from user_settings where user='$user'"));
+  $result = mysqli_fetch_array(my_mysql_query("select * from user_settings where user='$user'"));
   
   $temp = $result['style'];
   if ($result['color'] != '')
@@ -148,13 +148,13 @@ function userstyle($user)
 
 function user_settings($user)
 {
-  return  mysql_fetch_array(my_mysql_query("select * from user_settings where user='$user'"));
+  return  mysqli_fetch_array(my_mysql_query("select * from user_settings where user='$user'"));
 }
 
 function pms($user)
 {
   $query = my_mysql_query("select * from pms where uto='$user'");
-  $num = mysql_num_rows($query);
+  $num = mysqli_num_rows($query);
   if ($num > 0)
     return "$num private <a href=\"checkmsgs.php\" target=\"_blank\">msgs</a> waiting!";
 
@@ -167,7 +167,7 @@ function users()
   $query = my_mysql_query('select user from users');
 
   $i = 0;
-  while($result = mysql_fetch_array($query))
+  while($result = mysqli_fetch_array($query))
     echo $result[0];
 //$temp[$i++] = $result["user"];
     
@@ -179,14 +179,15 @@ function onlineusers()
   $time = time() - 5;
   $q = my_mysql_query("select user from users where lastseen  > $time");
 
-  while($r = mysql_fetch_array($q))
+  while($r = mysqli_fetch_array($q))
     echo $r['user'] . '; ';
 }
 
 function getmydate($date)
 {  
-  return substr($date, 6,2) . "/" . substr($date,4,2) . ' ' . 
-    substr($date,8,2) . ':' . substr($date,10,2) . ':' . substr($date,12);
+  return date('d/m/Y H:i:s', strtotime($date));
+  //substr($date, 6, 2) . "/" . substr($date,4,2) . ' ' . 
+  //  substr($date,8,2) . ':' . substr($date,10,2) . ':' . substr($date,12);
 }
 
 function getmytimepast($u)
@@ -216,7 +217,8 @@ function getmytimepast($u)
 
 function lastseen_user($user) // == $_SERVER[PHP_AUTH_USER])
 {
-  mysql_query("update users set lastseen=unix_timestamp() where user='$user'");
+  global $dbConn;
+  mysqli_query($dbConn, "update users set lastseen=unix_timestamp() where user='$user'");
 }
 
 function getmicrotime() 
@@ -243,7 +245,8 @@ function refresh_main()
 function my_mysql_query($string)
 {
 	include('config.php');
-  mysql_pconnect('localhost', $dbuser, $dbpass);
-  mysql_select_db($db);
-  return mysql_query($string);
+  global $dbConn;
+  $dbConn = mysqli_connect('localhost', $dbuser, $dbpass);
+  mysqli_select_db($dbConn, $db);
+  return mysqli_query($dbConn, $string);
 }
