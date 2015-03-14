@@ -1,0 +1,178 @@
+body {
+	font-family: Cousine, monospace;
+	color: #666;
+}
+
+h2 {
+	font-weight: bold;
+	font-style: italic;
+	display: inline;
+}
+
+hr { 
+	border: none;
+	border-top: 1px solid gray;
+}
+
+table { 
+	border: 1px solid gray;
+	border-right: none;
+	border-bottom: none;
+	background: #eee;
+}
+
+td, th {
+	border: 1px solid gray;
+	border-left: 2px solid white;
+	border-top: 1px solid white;
+	
+	padding: 1px 5px;
+	font-size: 12px;
+}
+
+th {
+	font-weight: bold;
+	background: #999;
+	color: white;
+}
+
+th a {
+	color: white;
+}
+
+.odd { background: #ddffdd; }
+.even { background: #eeeeee; }
+
+.secondary { 
+	color: gray;
+	font-weight: normal;
+	font-size: 12px;
+}
+.clear { clear: both; }
+
+.active { 
+	background: lightgreen;
+	color: black;
+	/*font-weight: bold;
+	padding: 1px 0px;*/
+}
+
+.completed { background: #ddffdd; }
+.waiting { background: lightblue; }
+.low { background: lightgray; }
+.normal { background: #eee; }
+.high { background: salmon; }
+.critical {
+	background: red;
+	color: white;
+	font-weight: bold;
+}
+
+.lst {
+	float: right;
+	margin: 0 20px;
+}
+
+a {
+	text-decoration: none;
+	color: green;
+}
+
+a.order {
+	display: block;
+}
+
+a.order:hover {
+	background: white;
+	color: black;
+}
+
+img { border: none }
+
+input, select, textarea, button {
+	border: 1px solid lightgray;
+	background: white;
+	color: gray;
+}
+
+#password {
+	color: lightgray;
+	font-size: 12pt;
+	font-style: italic;
+	font-family: Webdings, sans-serif;
+}
+
+.details {
+	display: none;
+}
+
+.box {
+	border: 1px solid gray;
+	background: white;
+	padding: 5px;
+	font-weight: normal;
+}
+
+#login_button {
+	background: white;
+	color: lightgray;
+}
+
+/*
+.proj:before {
+	content: url('images/icons/proj.png') ' ';
+}
+.context:before {
+	content: url('images/icons/tag.png') ' ';
+}
+*/
+.clr { clear: both; }
+.proj, .context { 
+	background: lightblue;
+	border: 1px solid gray;
+	color: white;
+	font-weight: bold;
+	padding: 2px;
+	white-space: nowrap;
+	padding-top: -3px;
+	display: block;
+	margin-right: 4px;
+}
+.proj {	float: left; }
+.context {	float: right; }
+
+.notes { display: none }
+.tasklog { position: absolute }
+
+.progress {
+	width: 400px;
+	height: 25px;
+}
+
+.task_progress {
+	width: 100px;
+	margin: auto;
+	height: 25px;
+}
+
+.progress_bar, .xp_bar {
+	background: lightgreen url('images/icons/bar.png') repeat-x;
+	height: 15px;
+}
+
+.progress_bar {
+	font-size: 12px;
+}
+
+.xp_bar {
+	text-indent: 10px;
+	font-weight: bold;
+	white-space: nowrap;
+}
+
+.points {
+	float: right;
+	margin-left: 10px;
+	color: blue;
+	width: 120px;
+}

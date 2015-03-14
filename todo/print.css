@@ -1,0 +1,15 @@
+body {
+	margin: 0px;
+	font-size: 8pt;
+}
+.noprint, .progress, .points, .neverprint { display: none; }
+.notes { display: block }
+.newpage { page-break-before: always; }
+td, th {
+	border: none;
+	border-bottom: 1px solid gray;
+	padding: 0px;
+	font-size: 8pt;
+}
+
+tr.important, tr.high { font-weight: bold; }
