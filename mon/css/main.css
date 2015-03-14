@@ -1,0 +1,63 @@
+body {
+	font-family: Georgia, serif;
+	font-size: 12px;
+}
+
+label {
+	font-weight: bold;
+}
+
+a {
+	color: gray;
+	text-decoration: none;
+}
+
+h2 { margin: 0px }
+
+.sites {
+	margin-left: auto;
+	margin-right: auto;
+	width: 800px;
+	display: none;
+}
+
+.service {
+	border: 1px solid black;
+	padding: 1px;
+}
+
+.block {
+	background: lightgray;
+	margin-bottom: 20px;
+	border: 1px solid grey;
+}
+
+.title {
+	background: skyblue;
+	color: white;
+	border-bottom: 1px solid gray;
+	font-size: 12px;
+	font-weight: bold;
+	padding: 5px;
+}
+
+.info, .warning {
+	border: 1px dotted gray;
+	padding: 10px 10px 5px 25px;
+	margin: 5px;
+}
+
+.warning {
+	color: darkorange;
+	background: white url(../images/warning.png) no-repeat top left;
+}
+
+.info {
+	color: blue;
+	background: white url(../images/info.png) no-repeat top left;
+}
+
+.block_body {
+	margin: 10px;
+	display: none;
+}

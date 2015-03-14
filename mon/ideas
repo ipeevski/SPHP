@@ -1,0 +1,163 @@
+Monitoring:
+- Setup monitoring for services / ports / files / etc
+- Email alerts when criteria are met
+- Jabber alerts
+- Update page/file on server
+
+tools:
+- ping (min/max/avg over 10)
+- traceroute (ip, host, network, ping)
+- snmp
+
+benchmarks:
+- apache benchmark (ab)
+- ...
+
+apache status (mod_status)
+- /server-status?refresh=N (seconds)
+<Location /server-status>
+SetHandler server-status
+ExtendedStatus On
+- /server-info
+- uptime
+- cpu%
+- mem%
+
+system: 
+- uptime
+- load
+- cpu
+- mem
+
+filesystem:
+- usage / free
+
+php:
+- phpinfo() data
+
+Order Deny,Allow
+Deny from all
+Allow from .foo.com
+</Location>
+
+marketting:
+- SEO score (number of keywords, number of backlinks, page rank, page size, has title/keywords/description, has only 1 h1 tag)
+- net worth
+http://websitevalued.com/MarketPlace.aspx
+- daily page views
+- daily ads revenue
+
+- text browser (h1 in red, links in bold)
+
+- title relevancy
+- description relevancy
+- terms (unique / linked)
+See http://whois.domaintools.com/rejournal.com
+
+- back links
+
+Validate RSS/Atom feeds:
+http://validator.w3.org/feed/
+
+Validate mobileOK:
+http://validator.w3.org/mobile/
+
+Check links validity:
+http://validator.w3.org/checklink
+
+Check Semantic info:
+http://www.w3.org/2003/12/semantic-extractor.html
+
+Indexed Data:
+	dmoz: (http://www.dmoz.org/help/getdata.html)
+	- exists
+	- title
+	- description
+	- category
+	yahoo directory:
+	- listed on wikipedia pages
+	google:
+	- rank
+	- # results (for site: search)
+	- directory listing
+
+
+viewers demographics:
+http://www.quantcast.com/rejournal.com
+
+other rankings:
+http://siteanalytics.compete.com/rejournal.com/?src=dt100
+
+
+- host ip
+
+Other sites on same IP:
+http://thesameip.com/?s=rejournal.com
+http://whois.webhosting.info/72.18.132.175
+http://www.domaintools.com/reverse-ip/
+
+Thumbnail:
+
+whois:
+- ip
+- ICANN registrar
+- creation date
+- last update date
+- expiry date
+- dns servers
+- registrant
+- contact details
+- registered?
+- active?
+
+
+Social Networking
+- found in twitter accounts
+- XFN links - rel in links (http://gmpg.org/xfn/)
+- FOAF tags (http://www.foaf-project.org/)
+Use social graph API (http://code.google.com/apis/socialgraph/) to explore
+
+Technology (and popularity) (ideas from http://builtwith.com/?ReJournal.com)
+- server
+- rss - Atom/RSS 0.9/1.0/2 (http://en.wikipedia.org/wiki/RSS_(file_format))
+- css (http://en.wikipedia.org/wiki/Cascading_Style_Sheets)
+- javascript (http://en.wikipedia.org/wiki/JavaScript)
+- javascript libraries
+	- prototype (http://www.prototypejs.org)
+	- jquery
+	- script.aculo.us (http://script.aculo.us/)
+- flash (version)
+- APIs
+	- google chart (http://chart.apis.google.com/chart)
+- language
+- site analytics
+	- google analytics
+	- omniture SiteCatalyst (http://www.omniture.com/)
+- Content Delivery Network (CDN) (http://en.wikipedia.org/wiki/Content_Delivery_Network)
+	- Amazon (S3)
+	- Google Hosting
+Get popularity data from:
+netcraft (http://survey.netcraft.com/Reports/200810/)
+built with (http://builtwith.com/Trends) - also get ideas for detections from here
+
+
+
+
+
+
+Cool ideas when enough data exists:
+Stats for technologies:
+- Servers
+- APIs
+- Libraries
+- Language
+- OS
+- Network
+- Country
+Domain:
+- servers per DNS server (http://www.domaintools.com/ns-spy/)
+- domains for email
+- NS record changes (http://www.domaintools.com/hosting-history/)
+- IP changes (http://www.domaintools.com/hosting-history/)
+- Registrars history
+- reverse IP (servers on same IP)

@@ -1,0 +1,24 @@
+<?php
+$config['sites'] = array('google.com');
+
+$config['disabled'] = array(); // 'http', 'html', 'alexa', 'awstats', 'wayback_machine', 'geoip', 'mysql'
+
+$config['awstats']['url'] = '';
+
+$config['alexa']['login'] = '';
+$config['alexa']['secret'] = '';
+
+$config['technorati']['apikey'] = '';
+
+$config['mysql']['user'] = 'root';
+$config['mysql']['passwd'] = '';
+
+$config['email']['smtp'] = '';
+$config['email']['from'] = 'root@localhost';
+$config['email']['to'] = array(
+	'user@example.com' => array(
+				'sites' => array('google.com'),
+				'mods' => array('http', 'mysql'),
+				'type' => 'daily'),
+	);
+?>
