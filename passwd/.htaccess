@@ -1,0 +1,8 @@
+AuthType Basic
+AuthName Passwd
+AuthUserFile /var/www/passwd
+require valid-user
+order allow,deny
+allow from 192.
+allow from localhost
+satisfy any

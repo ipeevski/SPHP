@@ -1,0 +1,29 @@
+body
+{
+}
+
+td, th
+{
+	border: 1px solid gray;
+	padding: 5px;
+}
+
+tr.odd, option.odd {	background: #ddffdd; }
+tr.even, option.even {	background: #eeeeee; }
+
+tr.completed { background: #ddffdd; }
+tr.low, option.low { background: lightgray; }
+tr.normal, option.normal {  }
+tr.high, option.high{ background: salmon; }
+tr.important, option.important{ background: red; color: white; font-width: bold;}
+
+a {text-decoration: none; color: green}
+
+img {border: none}
+
+input, select, textarea
+{
+	border: 1px solid lightgray;
+	background: white; 
+	color: gray;
+}
