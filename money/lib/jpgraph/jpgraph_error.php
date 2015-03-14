@@ -4,7 +4,7 @@
 // Description:	Error plot extension for JpGraph
 // Created: 	2001-01-08
 // Author:	Johan Persson (johanp@aditus.nu)
-// Ver:		$Id$
+// Ver:		$Id: jpgraph_error.php 30 2005-06-21 13:18:28Z cyberhorse $
 //
 // License:	This code is released under QPL
 // Copyright (C) 2001,2002 Johan Persson

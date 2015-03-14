@@ -4,7 +4,7 @@
 // Description:	Stock plot extension for JpGraph
 // Created: 	2003-01-27
 // Author:	Johan Persson (johanp@aditus.nu)
-// Ver:		$Id$
+// Ver:		$Id: jpgraph_stock.php 30 2005-06-21 13:18:28Z cyberhorse $
 //
 // License:	This code is released under QPL
 // Copyright (C) 2003 Johan Persson

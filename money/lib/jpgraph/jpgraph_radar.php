@@ -4,7 +4,7 @@
 // Description: Radar plot extension for JpGraph
 // Created: 	2001-02-04
 // Author:	Johan Persson (johanp@aditus.nu)
-// Ver:		$Id$
+// Ver:		$Id: jpgraph_radar.php 30 2005-06-21 13:18:28Z cyberhorse $
 //
 // License:	This code is released under QPL
 // Copyright (C) 2001,2002 Johan Persson

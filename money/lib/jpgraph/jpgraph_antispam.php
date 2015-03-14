@@ -4,7 +4,7 @@
 // Description:	Genarate anti-spam challenge
 // Created: 	2004-10-07
 // Author:	Johan Persson (johanp@aditus.nu)
-// Ver:		$Id$
+// Ver:		$Id: jpgraph_antispam.php 30 2005-06-21 13:18:28Z cyberhorse $
 //
 // License:	This code is released under QPL 1.0
 // Copyright (C) 2004 Johan Persson

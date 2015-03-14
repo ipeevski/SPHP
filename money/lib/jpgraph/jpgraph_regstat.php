@@ -4,7 +4,7 @@
 // Description: Regression and statistical analysis helper classes
 // Created: 	2002-12-01
 // Author:	Johan Persson (johanp@aditus.nu)
-// Ver:		$Id$
+// Ver:		$Id: jpgraph_regstat.php 30 2005-06-21 13:18:28Z cyberhorse $
 //
 // License:	This code is released under QPL
 // Copyright (C) 2002 Johan Persson
