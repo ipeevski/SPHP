@@ -3,7 +3,7 @@
 	 *
 	 *	EditArea PHP compressor
 	 * 	Developped by Christophe Dolivet
-	 *	Released under LGPL license
+	 *	Released under LGPL, Apache and BSD licenses
 	 *	v1.1.3 (2007/01/18)	 
 	 *
 	******/
@@ -143,14 +143,34 @@
 			$loader= $this->get_content("edit_area_loader.js")."\n";
 			
 			// get the list of other files to load
-	    	$loader= preg_replace("/(this\.scripts_to_load= new Array)\(([^\)]*)\);/e"
+	    	$loader= preg_replace("/(t\.scripts_to_load=\s*)\[([^\]]*)\];/e"
 						, "\$this->replace_scripts('script_list', '\\1', '\\2')"
 						, $loader);
 		
-			$loader= preg_replace("/(this\.sub_scripts_to_load= new Array)\(([^\)]*)\);/e"
+			$loader= preg_replace("/(t\.sub_scripts_to_load=\s*)\[([^\]]*)\];/e"
 						, "\$this->replace_scripts('sub_script_list', '\\1', '\\2')"
 						, $loader);
 
+			// replace languages names
+			$reg_path= $this->path."reg_syntax/";
+			$a_displayName	= array();
+			if (($dir = @opendir($reg_path)) !== false)
+			{
+				while (($file = readdir($dir)) !== false)
+				{
+					if( $file !== "." && $file !== ".." && ( $pos = strpos( $file, '.js' ) ) !== false )
+					{
+						$jsContent	= $this->file_get_contents( $reg_path.$file );
+						if( preg_match( '@(\'|")DISPLAY_NAME\1\s*:\s*(\'|")(.*)\2@', $jsContent, $match ) )
+						{
+							$a_displayName[] = "'". substr( $file, 0, $pos ) ."':'". htmlspecialchars( $match[3], ENT_QUOTES ) ."'";
+						}
+					}
+				}
+				closedir($dir);
+			}
+			$loader	= str_replace( '/*syntax_display_name_AUTO-FILL-BY-COMPRESSOR*/', implode( ",", $a_displayName ), $loader );
+						
 			$this->datas= $loader;
 			$this->compress_javascript($this->datas);
 			
@@ -205,7 +225,42 @@
 			
 			
 			// add the scripts
-			$this->datas.= sprintf("editAreaLoader.iframe_script= \"<script language='Javascript' type='text/javascript'>%s</script>\";\n", $sub_scripts);
+		//	$this->datas.= sprintf("editAreaLoader.iframe_script= \"<script type='text/javascript'>%s</script>\";\n", $sub_scripts);
+		
+		
+			// add the script and use a last compression 
+			if( $this->param['compress'] )
+			{
+				$last_comp	= array( 'Á' => 'this',
+								 'Â' => 'textarea',
+								 'Ã' => 'function',
+								 'Ä' => 'prototype',
+								 'Å' => 'settings',
+								 'Æ' => 'length',
+								 'Ç' => 'style',
+								 'È' => 'parent',
+								 'É' => 'last_selection',
+								 'Ê' => 'value',
+								 'Ë' => 'true',
+								 'Ì' => 'false'
+								 /*,
+									'Î' => '"',
+								 'Ï' => "\n",
+								 'À' => "\r"*/);
+			}
+			else
+			{
+				$last_comp	= array();
+			}
+			
+			$js_replace= '';
+			foreach( $last_comp as $key => $val )
+				$js_replace .= ".replace(/". $key ."/g,'". str_replace( array("\n", "\r"), array('\n','\r'), $val ) ."')";
+			
+			$this->datas.= sprintf("editAreaLoader.iframe_script= \"<script type='text/javascript'>%s</script>\"%s;\n",
+								str_replace( array_values($last_comp), array_keys($last_comp), $sub_scripts ), 
+								$js_replace);
+			
 			if($this->load_all_plugins)
 				$this->datas.="editAreaLoader.all_plugins_loaded=true;\n";
 		
@@ -297,7 +352,7 @@
 				// add line break before "else" otherwise navigators can't manage to parse the file
 				$code= preg_replace('/(\b(else)\b)/', "\n$1", $code);
 				// remove unnecessary spaces
-				$code= preg_replace('/( |\t|\r)?(;|\{|\}|=|==)( |\t|\r)+/', "$2", $code);
+				$code= preg_replace('/( |\t|\r)*(;|\{|\}|=|==|\-|\+|,|\(|\)|\|\||&\&|\:)( |\t|\r)*/', "$2", $code);
 			}
 		}
 		
@@ -307,6 +362,8 @@
 			$code= preg_replace("/(?:\/\*(?:.|\n|\r|\t)*?(?:\*\/|$))/s", "", $code);
 			// remove spaces
 			$code= preg_replace('/(( |\t|\r)*\n( |\t)*)+/s', "", $code);
+			// remove spaces
+			$code= preg_replace('/( |\t|\r)?(\:|,|\{|\})( |\t|\r)+/', "$2", $code);
 		
 			$this->prepare_string_for_quotes($code);
 			return $code;
@@ -335,7 +392,7 @@
 		function replace_scripts($var, $param1, $param2)
 		{
 			$this->$var=stripslashes($param2);
-	        return $param1."();";
+	        return $param1."[];";
 		}
 
 		/* for php version that have not thoses functions */
