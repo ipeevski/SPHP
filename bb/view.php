@@ -1,8 +1,9 @@
 <?php
 $pagesize = 10;
 $start = isset($_GET['page'])?$_GET['page']:0;
-if ($start < 0)
+if ($start < 0) {
 	$start = 0;
+}
 
 function format_id($id)
 {
