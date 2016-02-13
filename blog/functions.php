@@ -23,36 +23,40 @@ function num_replies($id)
 function show_row($row, $type)
 {
 
-  if ($row['timestamp']+3000000 > date("Ymdhis"))
-    $new = '<img src="images/new.gif" />';
-  else
+  if ($row['timestamp']+3000000 > date("Ymdhis")) {
+      $new = '<img src="images/new.gif" />';
+  } else
   {
     $q = my_mysql_query("select timestamp from replies where parent='$row[id]' order by timestamp desc");
     $r = mysql_fetch_array($q);
-  if ($r['timestamp']+3000000 > date("Ymdhis"))
-    $new = '<img src="images/new.gif" />';
+  if ($r['timestamp']+3000000 > date("Ymdhis")) {
+      $new = '<img src="images/new.gif" />';
+  }
   }
   $msg = $row['message'];
   $msg = prepare($msg);
   $final = "<div style=\"float: left; padding: 0px; margin-left: 0px; margin-right: 0px; margin-bottom: 0px\">" . ((!empty($row['flags']))?("<img src=\"./images/" . $row['flags'] .".gif\" />"):"") . "</div>" . 
 "<div style=\"margin-left: 20px; border-style: solid; border-color: #006600; border-width: thin; border-bottom-style: none; align: center; width: 200px; background:#ccff99;\">" . ((!empty($row['flag']))?("<img src=\"./images/" . $row['flags'] .".gif\" />"):"") . "<span style=\"color: green;\">[".getmydate($row['timestamp']) . "]</span> by ".$row['user']."</div>"; 
-	if (!isset($row['title']))
-		$row['title'] = '';
+	if (!isset($row['title'])) {
+			$row['title'] = '';
+	}
 	$final .= "<div style=\"margin-left: 0px; border-style: solid; border-color: #006600; border-width: thin; padding: 15px; align: center; width: 300px; background:#ccffcc;\"><b style=\"text-transform: capitalize\">" . $new.$row['title'] . "</b><br /> "; 
   if ($type == "short")
   {
     $final .= substr($row['message'], 0, 100+strpos(substr($row['message'], 100), ' '));
-    if (strlen($msg) > 100 || num_replies($row['id']))
-      $final .= " <a href=\"complete.php?id=" . $row['id'] . "\">more...</a>";
-    else
-      $final .= "<br><a href=\"complete.php?id=" . $row['id'] . "\">reply</a>";
+    if (strlen($msg) > 100 || num_replies($row['id'])) {
+          $final .= " <a href=\"complete.php?id=" . $row['id'] . "\">more...</a>";
+    } else {
+          $final .= "<br><a href=\"complete.php?id=" . $row['id'] . "\">reply</a>";
+    }
     $final .= "<br>(".num_replies($row['id'])." replies)"; 
+  } else if ($type == 'long') {
+      $final .= $msg;
   }
-  else if ($type == 'long')
-    $final .= $msg;
 
-	if (!empty($row['attachment']))
-    $final .= ' <br />[<a href="upload/' . $row['attachment'] . '"> file </a>]';
+	if (!empty($row['attachment'])) {
+	    $final .= ' <br />[<a href="upload/' . $row['attachment'] . '"> file </a>]';
+	}
 
   $final .= "</div><br>";
   return $final;
@@ -86,28 +90,31 @@ function fixLinks($text)
     {
       $start = strpos($text, "http://");
       $end = substr($text, $start);
-      if (strpos($end, " "))
-        $link = substr($end, 0, strpos($end, " "));
-      else
-        $link = substr($end, 0, strlen($end));
-      if (strpos($end, "<"))
-        $link = substr($end, 0, strpos($end, "<"));
+      if (strpos($end, " ")) {
+              $link = substr($end, 0, strpos($end, " "));
+      } else {
+              $link = substr($end, 0, strlen($end));
+      }
+      if (strpos($end, "<")) {
+              $link = substr($end, 0, strpos($end, "<"));
+      }
       
       $text = substr($text, 0, $start) .
                  "<a href=\"$link\" target=\"_blank\">$link</a>" .
                   substr($text, $start+strlen($link));
         
-    }
-    else if (strstr($text, " www."))
+    } else if (strstr($text, " www."))
     {
       $start = strpos($text, "www.");
       $end = substr($text, $start);
-      if (strpos($end, " "))
-        $link = substr($end, 0, strpos($end, " "));
-      else
-        $link = substr($end, 0, strlen($end));
-      if (strpos($end, "<"))
-        $link = substr($end, 0, strpos($end, "<"));
+      if (strpos($end, " ")) {
+              $link = substr($end, 0, strpos($end, " "));
+      } else {
+              $link = substr($end, 0, strlen($end));
+      }
+      if (strpos($end, "<")) {
+              $link = substr($end, 0, strpos($end, "<"));
+      }
       $text = substr($text, 0, $start) .
             "<a href=\"http://$link\" target=\"_blank\">$link</a>" .
             substr($text, $start+strlen($link));
@@ -120,12 +127,14 @@ function closetags($text)
 {
   $tags = array("font", "b", "i", "span", "h1", "h2", "h3", "h4", "h5",
 "h6", "center", "marquee");
-  foreach ($tags as $tag)
-    if (stristr($text, "<$tag"))
+  foreach ($tags as $tag) {
+      if (stristr($text, "<$tag"))
     {
       $temp = substr($text, strrpos(strtolower($text), "<$tag"));
-      if (!strpos(strtolower($temp), "</$tag>"))
-        $text .= " </$tag>";
+  }
+      if (!strpos(strtolower($temp), "</$tag>")) {
+              $text .= " </$tag>";
+      }
     }
 
   if (stristr($text, "marquee"))
