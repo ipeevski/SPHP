@@ -1,6 +1,6 @@
 body {
-	font-family: Cousine, monospace;
-	color: #666;
+	font-family: 'Nova Mono', Cousine, monospace;
+	color: #222;
 }
 
 h2 {
@@ -27,7 +27,7 @@ td, th {
 	border-top: 1px solid white;
 	
 	padding: 1px 5px;
-	font-size: 12px;
+	font-size: 1em;
 }
 
 th {

@@ -2,7 +2,9 @@
 <head>
 	<title>TODO list</title>
 	<script type="text/javascript" src="js/jquery.js"></script>
-	<link href="http://fonts.googleapis.com/css?family=Cousine" rel="stylesheet" type="text/css">
+	<link href='https://fonts.googleapis.com/css?family=Nova+Mono' rel='stylesheet' type='text/css'>
+	<!--
+<link href="http://fonts.googleapis.com/css?family=Cousine" rel="stylesheet" type="text/css"> -->
 	<link rel="stylesheet" type="text/css" href="jquery-ui.css" />
 	<link rel="stylesheet" type="text/css" href="main.css" />
 	<link rel="stylesheet" type="text/css" href="print.css" media="print" />
