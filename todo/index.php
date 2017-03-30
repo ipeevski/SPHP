@@ -17,7 +17,7 @@ if ($action == 'login' && $_POST['password'] == $password) {
 }
 
 // Kick out users if they are not logged in.
-if (!empty($password) and !isset($_SESSION['password'])) {
+if (!empty($password) && !isset($_SESSION['password'])) {
 	include 'template/login.php';
 	exit;
 }
@@ -96,7 +96,7 @@ if ($action == 'search') {
 	if (!empty($row['recur'])) {
 		db_exec("INSERT INTO todo(user, task, notes, duration, priority, recur) (SELECT user, task, notes, duration, priority, recur FROM todo WHERE id = $task LIMIT 1)");
 		$new_id = db_lastid();
-		if ($row['recur'] == '1 days' and date('l') == 'Friday') {
+		if ($row['recur'] == '1 days' && date('l') == 'Friday') {
 			$row['recur'] = '3 days';
 		}
 		$new_date = date('Y-m-d H:i:s', strtotime('+'.$row['recur'], strtotime($row['date'])));
@@ -115,19 +115,19 @@ if ($action == 'search') {
 	if ($action == 'save') {
 		$last_user = $_POST['user'];
 		$date = $_POST['date'];
-		if (!empty($date) and !empty($_POST['time'])) {
+		if (!empty($date) && !empty($_POST['time'])) {
 			$date .= ' ' . $_POST['time'] . ':00';
 		}
 		$log = '';
 		if (!empty($_POST['id'])) {
 			$task = $_POST['id'];
 			$row = db_row('SELECT date, recur, completed FROM todo WHERE completed < 100 AND id = ' . $task);
-			if ((empty($date) or $date == '0000-00-00') and $row['completed'] < 100 and $_POST['completed'] == 100) {
+			if ((empty($date) or $date == '0000-00-00') && $row['completed'] < 100 && $_POST['completed'] == 100) {
 				$date = date('Y-m-d H:i:s');
 			}
 			db_exec('DELETE FROM todo WHERE id = ' . $_POST['id']);
 			$log = 'Updated task';
-		} elseif (empty($date) and $_POST['completed'] == 100) {
+		} elseif (empty($date) && $_POST['completed'] == 100) {
 			$date = date('Y-m-d H:i:s');
 			$log = 'Added task';
 		} else {
@@ -143,11 +143,11 @@ if ($action == 'search') {
 		$task = db_lastid();
 		// Record history
 		msg($task, $log);
-		if (empty($_POST['id']) and $_POST['completed'] == 100) {
+		if (empty($_POST['id']) && $_POST['completed'] == 100) {
 			$row = array('date' => $date, 'recur' => $_POST['recur']);
 		}
 
-		if (isset($row) and !empty($row['recur']) and $_POST['completed'] == 100) {
+		if (isset($row) && !empty($row['recur']) && $_POST['completed'] == 100) {
 			db_exec("INSERT INTO todo(user, task, notes, duration, priority, recur) (SELECT user, task, notes, duration, priority, recur FROM todo WHERE id = $task)");
 			$new_id = db_lastid();
 			$new_date = date('Y-m-d H:i:s', strtotime('+'.$row['recur'], strtotime($row['date'])));
@@ -177,10 +177,10 @@ if ($action == 'search') {
 				}
 
 				// Insert recurring tasks
-				if ($row and !empty($row['recur'])) {
+				if ($row && !empty($row['recur'])) {
 					db_exec("INSERT INTO todo(user, task, notes, duration, priority, recur) (SELECT user, task, notes, duration, priority, recur FROM todo WHERE id = $task LIMIT 1)");
 					$new_id = db_lastid();
-					if ($row['recur'] == '1 days' and date('l') == 'Friday') {
+					if ($row['recur'] == '1 days' && date('l') == 'Friday') {
 						$row['recur'] = '3 days';
 					}
 					$new_date = date('Y-m-d H:i:s', strtotime('+'.$row['recur'], strtotime($row['date'])));
@@ -200,10 +200,10 @@ if ($action == 'search') {
 			}
 		
 			// Insert recurring tasks
-			if ($row and !empty($row['recur'])) {
+			if ($row && !empty($row['recur'])) {
 				db_exec("INSERT INTO todo(user, task, notes, duration, priority, recur) (SELECT user, task, notes, duration, priority, recur FROM todo WHERE id = $task LIMIT 1)");
 				$new_id = db_lastid();
-				if ($row['recur'] == '1 days' and date('l') == 'Friday') {
+				if ($row['recur'] == '1 days' && date('l') == 'Friday') {
 					$row['recur'] = '3 days';
 				}
 				$new_date = date('Y-m-d H:i:s', strtotime('+'.$row['recur'], strtotime($row['date'])));
@@ -234,7 +234,7 @@ if ($action == 'search') {
 	
 
 // By default only show task that have been finished in the last week or are upcoming in the next two weeks.
-if ($action != 'search' and $action != 'today') {
+if ($action != 'search' && $action != 'today') {
 	$last_week = date('Y-m-d', time() - 3600*24*7); // Last week
 	$next_week = date('Y-m-d', time() + 3600*24*7); // Next week
 	$two_weeks = date('Y-m-d', time() + 3600*24*7*2); // Next 2 weeks
